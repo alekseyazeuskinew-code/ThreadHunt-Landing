@@ -18,9 +18,12 @@ export const ANALYTICS = {
 
 // Пиксель Meta (Facebook). Вставь ID из Events Manager. Пусто → выключен.
 export const META_PIXEL_ID = '1540456520862287';
-// true  = грузить пиксель только после согласия на cookie (GDPR — для ЕС/Дубая правильно);
-// false = грузить сразу для всех (больше данных, но без cookie-согласия — на свой риск).
-export const META_PIXEL_REQUIRE_CONSENT = true;
+// true  = грузить пиксель только после согласия на cookie (GDPR — строже);
+// false = грузить сразу для всех (максимум данных для рекламы; баннер остаётся уведомлением).
+export const META_PIXEL_REQUIRE_CONSENT = false;
+
+// Куда вести после заявки (Telegram-бот). Пусто → без редиректа, просто экран успеха.
+export const TELEGRAM_BOT_URL = ''; // напр. 'https://t.me/threadhunt_bot'
 
 // Промо для самых первых.
 export const PROMO = {

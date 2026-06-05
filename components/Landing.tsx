@@ -389,9 +389,9 @@ function Bento() {
               <span className="text-accent-ink">ИИ пишет: </span>
               <TypingText
                 phrases={[
-                  'Ищем монтажёра Reels — удалёнка, быстрые выплаты…',
-                  'Нужен таргетолог с кейсами в нише…',
-                  'Backend-разработчик на Python, проект на 3 мес…',
+                  'Тредс, найди мне монтажёра Reels 🙏 пиши «монтаж» в директ…',
+                  'Таргетологи, вы тут?? 🔥 беру в команду — слово «таргет»…',
+                  'Расширяем трафик-команду 💪 нужен ассистент, кодовое «+»…',
                 ]}
               />
             </div>
@@ -559,7 +559,7 @@ function Pricing() {
                   Год <span className={cn('rounded-full px-1.5 py-0.5 text-[10px]', annual ? 'bg-on-accent/15 text-on-accent' : 'bg-accent-soft text-accent-ink')}>−17%</span>
                 </button>
               </div>
-              <div className="inline-flex self-start rounded-full border border-line bg-panel p-1">
+              <div className="flex flex-wrap gap-1 self-start rounded-2xl border border-line bg-panel p-1">
                 {CURRENCIES.map((c) => (
                   <button key={c.code} onClick={() => setCur(c.code)} className={cn('rounded-full px-3 py-1 text-sm transition-colors', cur === c.code ? 'bg-panel-2 text-text' : 'text-muted hover:text-text')}>{c.code}</button>
                 ))}
@@ -885,20 +885,21 @@ function Referral() {
 }
 
 /* ── Живая ИИ-песочница: кодовое слово → приманка + авто-ответ ──────────── */
-const ROLE_MAP: Record<string, { label: string; emoji: string }> = {
-  'монтаж': { label: 'видеомонтажёра', emoji: '🎬' },
-  'таргет': { label: 'таргетолога', emoji: '🎯' },
-  'python': { label: 'Python-разработчика', emoji: '🐍' },
-  'дизайн': { label: 'дизайнера', emoji: '🎨' },
-  'smm': { label: 'SMM-специалиста', emoji: '📱' },
-  'копирайт': { label: 'копирайтера', emoji: '✍️' },
-  'motion': { label: 'motion-дизайнера', emoji: '🎞️' },
-  'куратор': { label: 'куратора', emoji: '🎓' },
+const ROLE_MAP: Record<string, { label: string; plural: string; emoji: string }> = {
+  'монтаж': { label: 'видеомонтажёра', plural: 'Видеомонтажёры', emoji: '🎬' },
+  'таргет': { label: 'таргетолога', plural: 'Таргетологи', emoji: '🎯' },
+  'python': { label: 'Python-разработчика', plural: 'Python-разработчики', emoji: '🐍' },
+  'дизайн': { label: 'дизайнера', plural: 'Дизайнеры', emoji: '🎨' },
+  'smm': { label: 'SMM-специалиста', plural: 'SMM-щики', emoji: '📱' },
+  'копирайт': { label: 'копирайтера', plural: 'Копирайтеры', emoji: '✍️' },
+  'motion': { label: 'motion-дизайнера', plural: 'Motion-дизайнеры', emoji: '🎞️' },
+  'куратор': { label: 'куратора', plural: 'Кураторы', emoji: '🎓' },
+  'ассистент': { label: 'ассистента', plural: 'Ассистенты', emoji: '🤝' },
 };
 function roleFor(kw: string) {
   const k = kw.trim().toLowerCase();
   for (const key of Object.keys(ROLE_MAP)) if (k.includes(key)) return ROLE_MAP[key];
-  return { label: 'специалиста', emoji: '✨' };
+  return { label: 'специалиста', plural: 'Специалисты', emoji: '✨' };
 }
 function Sandbox() {
   const presets = ['монтаж', 'таргет', 'python', 'дизайн', 'SMM', 'копирайт'];
@@ -907,14 +908,14 @@ function Sandbox() {
   const role = roleFor(kw);
   const word = kw.trim() || 'кодовое слово';
   const baits = [
-    `Ищем ${role.label} в команду ${role.emoji}\nУдалёнка, быстрые выплаты. Пиши «${word}» в директ — пришлём бриф и тестовое.`,
-    `Нужен ${role.label} на проект. Без созвонов и бюрократии. Кодовое слово «${word}» в директ — и ты в деле.`,
-    `Расширяем команду: ищем ${role.label}. Платим вовремя, задачи интересные. Напиши «${word}» — отправлю детали.`,
+    `Тредс, найди мне ${role.label} 🙏 Беру в команду на постоянку — с насмотренностью и горящими глазами. Скинь другу/подруге, если в поисках 👀\nПиши «${word}» в директ — там пришлю детали. ${role.emoji}`,
+    `${role.plural}, вы тут?????? Отзовитесь!!! 🔥 Беру на потоковые задачи, плачу вовремя, без созвонов и бюрократии.\nКодовое слово «${word}» в директ — пришлю бриф.`,
+    `Расширяем трафик-команду, ищу ${role.label} 💪\nУ нас: сильная база, отделы дизайна и видео, чёткая структура. Горят глаза учиться — велком.\nПиши «${word}» в директ — отправлю бриф. Держу пару дней ⏳`,
   ];
   const replies = [
-    'Класс, что откликнулся! Лови короткое тестовое и условия 👇',
-    'Супер! Держи бриф — посмотри и скажи, берёшься? 🚀',
-    'Огонь! Вот тест на пару часов и ссылка с деталями.',
+    'Огонь, что откликнулся! 🙌 Лови короткий бриф и тестовое — глянь и скажи, берёшься?',
+    'Кайф! Держи детали и мини-тест 👇 если ок — двигаемся дальше 🚀',
+    'Спасибо за отклик! Вот условия и тестовое на пару часов. Жду решение 🔥',
   ];
   const bait = baits[v % baits.length];
   const reply = replies[v % replies.length];

@@ -232,7 +232,7 @@ function SearchPanel() {
           </div>
           <div>
             <div className="mb-1.5 text-[11px] font-medium text-muted">Шаблон отбивки</div>
-            <div className="rounded-lg border border-line bg-panel px-3 py-2 text-[11px] text-muted">«Класс! Лови бриф и тест 👇 …»</div>
+            <div className="rounded-lg border border-line bg-panel px-3 py-2 text-[11px] text-muted">«Огонь, что откликнулся! 🙌 Лови бриф и тест 👇 …»</div>
           </div>
         </div>
         <div className="mt-4 rounded-lg border border-accent/30 bg-accent-soft/40 p-3">
@@ -297,7 +297,7 @@ function MetaPanel() {
             <div className="mt-2 grid h-20 place-items-center rounded-md bg-[radial-gradient(ellipse_at_center,var(--panel-2),var(--bg))] text-muted">
               <ImageIcon size={20} />
             </div>
-            <p className="mt-2 text-[11px] text-muted">Ищем монтажёров Reels. Удалёнка, быстрые выплаты — пиши «монтаж».</p>
+            <p className="mt-2 text-[11px] text-muted">Монтажёры Reels, вы тут?? 🔥 Удалёнка, плачу вовремя — пиши «монтаж» в директ.</p>
             <LockBtn className="mt-2"><Sparkles size={12} /> Сгенерировать вариант</LockBtn>
           </div>
 

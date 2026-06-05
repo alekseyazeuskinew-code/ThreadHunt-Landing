@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { ArrowRight, Check, Sparkles, Lock } from 'lucide-react';
-import { WAITLIST_ENDPOINT, PROMO } from '@/lib/config';
+import { WAITLIST_ENDPOINT, PROMO, TELEGRAM_BOT_URL } from '@/lib/config';
 import { track } from '@/components/Analytics';
 import { trackLead } from '@/components/MetaPixel';
+import { Send } from 'lucide-react';
 
 // Чтение cookie (для fbp/fbc — улучшают матчинг в Meta).
 function getCookie(name: string): string | undefined {
@@ -17,6 +18,7 @@ function getCookie(name: string): string | undefined {
 // либо отправляет на WAITLIST_ENDPOINT (Formspree/Getform/Tally).
 export function Waitlist() {
   const [email, setEmail] = useState('');
+  const [telegram, setTelegram] = useState('');
   const [name, setName] = useState('');
   const [done, setDone] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -27,7 +29,7 @@ export function Waitlist() {
     setErr('');
     setBusy(true);
     try {
-      const body = new URLSearchParams({ 'form-name': 'waitlist', name, email, source: 'landing' });
+      const body = new URLSearchParams({ 'form-name': 'waitlist', name, email, telegram, source: 'landing' });
       if (WAITLIST_ENDPOINT) {
         await fetch(WAITLIST_ENDPOINT, { method: 'POST', headers: { Accept: 'application/json' }, body });
       } else {
@@ -48,6 +50,7 @@ export function Waitlist() {
           body: JSON.stringify({
             email,
             name,
+            telegram,
             source: 'landing',
             eventId,
             url: typeof location !== 'undefined' ? location.href : '',
@@ -56,6 +59,12 @@ export function Waitlist() {
           }),
         }).catch(() => {});
       } catch {}
+      // Переводим в Telegram-бота (если задан).
+      if (TELEGRAM_BOT_URL) {
+        setTimeout(() => {
+          try { window.location.href = TELEGRAM_BOT_URL; } catch {}
+        }, 2500);
+      }
     } catch {
       setErr('Не удалось отправить. Попробуй ещё раз.');
     } finally {
@@ -77,8 +86,8 @@ export function Waitlist() {
               Будь первым — и забери <span className="lp-gradient-text">−50%</span>
             </h2>
             <p className="mx-auto mt-4 max-w-md text-muted">
-              Сервис на финальной доводке. Оставь почту — {PROMO.limit} даём промокод{' '}
-              <span className="text-accent-ink">{PROMO.benefit}</span> и доступ раньше всех.
+              Сервис на финальной доводке. Оставь почту и Telegram — {PROMO.limit} даём промокод{' '}
+              <span className="text-accent-ink">{PROMO.benefit}</span> и доступ раньше всех. После заявки переведём в нашего Telegram-бота.
             </p>
 
             {/* Скарсити: занятые места по промокоду */}
@@ -111,6 +120,14 @@ export function Waitlist() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Имя (по желанию)"
+                className="w-full rounded-full border border-line bg-panel px-5 py-3 text-sm outline-none transition-colors focus:border-accent"
+              />
+              <input
+                name="telegram"
+                required
+                value={telegram}
+                onChange={(e) => setTelegram(e.target.value)}
+                placeholder="@username в Telegram"
                 className="w-full rounded-full border border-line bg-panel px-5 py-3 text-sm outline-none transition-colors focus:border-accent"
               />
               <div className="flex flex-col gap-3 sm:flex-row">
@@ -147,7 +164,18 @@ export function Waitlist() {
             <div className="mx-auto mt-2 inline-block rounded-xl border border-dashed border-accent/50 bg-accent-soft px-5 py-2 font-mono text-lg font-bold tracking-widest text-accent-ink">
               {PROMO.code}
             </div>
-            <p className="mt-3 text-sm text-muted">{PROMO.benefit}. Пришлём доступ на почту, как только откроем ранний доступ.</p>
+            <p className="mt-3 text-sm text-muted">{PROMO.benefit}. Доступ откроем в нашем Telegram-боте.</p>
+            {TELEGRAM_BOT_URL && (
+              <>
+                <a
+                  href={TELEGRAM_BOT_URL}
+                  className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press"
+                >
+                  <Send size={15} /> Перейти в Telegram-бота
+                </a>
+                <p className="mt-2 font-mono text-[11px] text-muted">Переводим тебя в бота…</p>
+              </>
+            )}
           </div>
         )}
       </div>
