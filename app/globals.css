@@ -1,0 +1,157 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Палитра «Lime-заряд» — тёмная (по умолчанию). Бренд Threadhunt.
+   accent      — лаймовая ЗАЛИВКА (кнопки, чипы)
+   on-accent   — текст НА лайме (тёмный — читаемо)
+   accent-ink  — акцент как ТЕКСТ/иконка/ссылка */
+:root {
+  --bg: #0b0b0f;
+  --panel: #14141a;
+  --panel-2: #1c1c24;
+  --border: #26262f;
+  --text: #ededf2;
+  --muted: #8a8a99;
+  --accent: #c6f24e;
+  --accent-press: #b2de3c;
+  --accent-soft: rgba(198, 242, 78, 0.12);
+  --on-accent: #0b0b0f;
+  --accent-ink: #c6f24e;
+  --success: #4ade80;
+  --danger: #fb7185;
+  --warning: #fbbf24;
+}
+
+/* Светлая тема — тёплый чистый фон, лайм-акцент сохранён. Включается data-theme="light". */
+:root[data-theme='light'] {
+  --bg: #fafaf7;
+  --panel: #ffffff;
+  --panel-2: #f2f2ec;
+  --border: #e7e7df;
+  --text: #16161c;
+  --muted: #6e6e78;
+  --accent: #b8e840;
+  --accent-press: #a7d62f;
+  --accent-soft: rgba(132, 178, 30, 0.16);
+  --on-accent: #14210a;
+  --accent-ink: #4d7a0a;
+  --success: #15a34a;
+  --danger: #e11d48;
+  --warning: #b45309;
+}
+
+@layer base {
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-inter), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.3s ease, color 0.3s ease;
+    /* Запрет копирования/выделения контента сайта. */
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  /* Поля ввода остаются доступными для набора. */
+  input, textarea, [contenteditable='true'] {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  img, video {
+    -webkit-user-drag: none;
+    user-select: none;
+  }
+  h1, h2, h3 {
+    font-family: var(--font-space), system-ui, sans-serif;
+    letter-spacing: -0.02em;
+  }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { background: var(--panel-2); border-radius: 999px; }
+  html { scroll-behavior: smooth; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes lp-spin { to { transform: rotate(360deg); } }
+  .lp-spin { animation: lp-spin 9s linear infinite; }
+}
+
+/* ============================================================
+   Анимации лендинга. Базовое состояние всегда видимо,
+   движение добавляется только при no-preference (a11y-safe).
+   ============================================================ */
+.lp-reveal { opacity: 1; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .lp-reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .lp-reveal.is-in { opacity: 1; transform: none; }
+
+  @keyframes lp-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-24px); } }
+  @keyframes lp-glow { 0%, 100% { opacity: 0.45; } 50% { opacity: 0.85; } }
+  @keyframes lp-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+  @keyframes lp-rise { from { opacity: 0; transform: translateY(12px) scale(0.96); } to { opacity: 1; transform: none; } }
+  @keyframes lp-pan { to { background-position: 200% center; } }
+  @keyframes lp-marquee { to { transform: translateX(-50%); } }
+  @keyframes lp-pulse-ring { 0% { box-shadow: 0 0 0 0 var(--accent-soft); } 70% { box-shadow: 0 0 0 9px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+  @keyframes lp-bar { 0%, 100% { transform: scaleY(0.35); } 50% { transform: scaleY(1); } }
+  @keyframes lp-sheen { to { transform: translateX(220%); } }
+
+  .lp-bar { transform-origin: bottom; animation: lp-bar 2.4s ease-in-out infinite; }
+  .lp-sheen::after {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 40%;
+    transform: translateX(-160%);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+    animation: lp-sheen 4.5s ease-in-out infinite;
+  }
+  .lp-float { animation: lp-float 9s ease-in-out infinite; }
+  .lp-float-slow { animation: lp-float 14s ease-in-out infinite; }
+  .lp-glow { animation: lp-glow 7s ease-in-out infinite; }
+  .lp-caret { animation: lp-blink 1.1s step-end infinite; }
+  .lp-rise { animation: lp-rise 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .lp-marquee { animation: lp-marquee 30s linear infinite; }
+  .lp-ring { animation: lp-pulse-ring 2.4s ease-out infinite; }
+  .lp-gradient-text { animation: lp-pan 6s linear infinite; }
+}
+
+/* Анимированный градиент в заголовке (текст «протекает» лаймом). */
+.lp-gradient-text {
+  background: linear-gradient(90deg, var(--text) 0%, var(--accent-ink) 50%, var(--text) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Тонкая сетка-подложка с радиальным затуханием по краям. */
+.lp-grid {
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 75% 55% at 50% 0%, #000 25%, transparent 72%);
+  mask-image: radial-gradient(ellipse 75% 55% at 50% 0%, #000 25%, transparent 72%);
+}
+
+/* Затухание краёв у бегущей строки кодовых слов. */
+.lp-fade-x {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+
+/* Прогресс-полоса активного шага в степпере. */
+@keyframes lp-progress { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+@media (prefers-reduced-motion: no-preference) {
+  .lp-progress { animation: lp-progress 3.8s linear forwards; }
+}
+
+/* Аккордеон FAQ — плавное раскрытие через grid-template-rows. */
+.lp-acc { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.32s cubic-bezier(0.16, 1, 0.3, 1); }
+.lp-acc.open { grid-template-rows: 1fr; }
+.lp-acc > div { overflow: hidden; }
