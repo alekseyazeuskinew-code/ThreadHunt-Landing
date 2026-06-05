@@ -23,6 +23,15 @@ export function Waitlist() {
   const [done, setDone] = useState(false);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
+  const [copied, setCopied] = useState(false);
+
+  function copyCode() {
+    try {
+      navigator.clipboard?.writeText(PROMO.code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {}
+  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -59,12 +68,6 @@ export function Waitlist() {
           }),
         }).catch(() => {});
       } catch {}
-      // Переводим в Telegram-бота (если задан).
-      if (TELEGRAM_BOT_URL) {
-        setTimeout(() => {
-          try { window.location.href = TELEGRAM_BOT_URL; } catch {}
-        }, 2500);
-      }
     } catch {
       setErr('Не удалось отправить. Попробуй ещё раз.');
     } finally {
@@ -87,7 +90,7 @@ export function Waitlist() {
             </h2>
             <p className="mx-auto mt-4 max-w-md text-muted">
               Сервис на финальной доводке. Оставь почту и Telegram — {PROMO.limit} даём промокод{' '}
-              <span className="text-accent-ink">{PROMO.benefit}</span> и доступ раньше всех. После заявки переведём в нашего Telegram-бота.
+              <span className="text-accent-ink">{PROMO.benefit}</span> и доступ раньше всех. Напомним один раз по почте, без спама.
             </p>
 
             {/* Скарсити: занятые места по промокоду */}
@@ -155,27 +158,41 @@ export function Waitlist() {
             </form>
           </>
         ) : (
-          <div className="mx-auto mt-8 max-w-md rounded-2xl border border-accent/40 bg-panel p-8">
-            <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-accent text-on-accent">
-              <Check size={22} />
+          <div className="anim-pop mx-auto mt-8 max-w-md rounded-2xl border border-accent/40 bg-panel p-8 text-center shadow-[0_0_55px_-16px_var(--accent-soft)]">
+            <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-accent lp-btn-grad text-on-accent lp-ring">
+              <Check size={26} />
             </span>
-            <h2 className="mt-5 font-display text-2xl font-bold">Ты в списке! 🎉</h2>
-            <p className="mt-3 text-sm text-muted">Промокод на запуск:</p>
-            <div className="mx-auto mt-2 inline-block rounded-xl border border-dashed border-accent/50 bg-accent-soft px-5 py-2 font-mono text-lg font-bold tracking-widest text-accent-ink">
-              {PROMO.code}
+            <h2 className="mt-5 font-display text-2xl font-bold">Спасибо, что поверил в нас 🙌</h2>
+            <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-muted">
+              Ты в списке первых. Для нас это правда много значит — мы небольшая команда и строим Threadhunt для таких, как ты.
+            </p>
+
+            <div className="mx-auto mt-6 max-w-xs rounded-xl border border-dashed border-accent/50 bg-accent-soft p-3">
+              <div className="text-[11px] text-muted">твой промокод на запуск</div>
+              <div className="mt-1 flex items-center justify-center gap-2">
+                <span className="font-mono text-lg font-bold tracking-widest text-accent-ink">{PROMO.code}</span>
+                <button onClick={copyCode} className="rounded-full border border-line bg-panel px-2.5 py-0.5 text-[11px] text-muted transition-colors hover:text-text">
+                  {copied ? 'скопировано ✓' : 'копировать'}
+                </button>
+              </div>
+              <div className="mt-1 text-[11px] text-accent-ink">{PROMO.benefit}</div>
             </div>
-            <p className="mt-3 text-sm text-muted">{PROMO.benefit}. Доступ откроем в нашем Telegram-боте.</p>
+
+            <p className="mx-auto mt-6 max-w-sm text-sm leading-relaxed text-muted">
+              Будем рады, если будешь следить за обновлениями. Напомним о себе <span className="text-text">один раз по почте</span> — без спама. И скоро позовём в наш Telegram 💚
+            </p>
+
             {TELEGRAM_BOT_URL && (
-              <>
-                <a
-                  href={TELEGRAM_BOT_URL}
-                  className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-accent lp-btn-grad px-6 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press"
-                >
-                  <Send size={15} /> Перейти в Telegram-бота
-                </a>
-                <p className="mt-2 font-mono text-[11px] text-muted">Переводим тебя в бота…</p>
-              </>
+              <a
+                href={TELEGRAM_BOT_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-accent lp-btn-grad px-6 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press"
+              >
+                <Send size={15} /> Подписаться на Telegram
+              </a>
             )}
+            <p className="mt-5 text-xs text-muted">Обнимаем и до связи 🫶</p>
           </div>
         )}
       </div>
