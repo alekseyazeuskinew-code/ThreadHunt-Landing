@@ -17,7 +17,7 @@ export const ANALYTICS = {
 };
 
 // Пиксель Meta (Facebook). Вставь ID из Events Manager. Пусто → выключен.
-export const META_PIXEL_ID = ''; // напр. '1234567890123456'
+export const META_PIXEL_ID = '1540456520862287';
 // true  = грузить пиксель только после согласия на cookie (GDPR — для ЕС/Дубая правильно);
 // false = грузить сразу для всех (больше данных, но без cookie-согласия — на свой риск).
 export const META_PIXEL_REQUIRE_CONSENT = true;
