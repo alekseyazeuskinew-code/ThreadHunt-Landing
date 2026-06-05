@@ -168,3 +168,12 @@
   animation: none;
   box-shadow: 0 0 0 1px var(--accent), 0 0 16px 0 rgba(198, 242, 78, 0.3);
 }
+
+/* Лаймовые заливки — мягкий градиент в тёмное (меньше «сплошного» лайма, больше глубины).
+   Накладывается поверх bg-accent; текст on-accent остаётся на светлой части — читаемо. */
+.lp-btn-grad {
+  background-image: linear-gradient(135deg, #c6f24e 0%, #a9d63f 45%, #5f8024 100%);
+}
+.lp-btn-grad:hover {
+  filter: brightness(1.06);
+}

@@ -22,7 +22,7 @@ export function StickyCta({ href, label }: { href: string; label: string }) {
     >
       <a
         href={href}
-        className="flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-on-accent shadow-2xl"
+        className="flex items-center justify-center gap-2 rounded-full bg-accent lp-btn-grad px-6 py-3.5 text-sm font-semibold text-on-accent shadow-2xl"
       >
         {label} <ArrowRight size={16} />
       </a>

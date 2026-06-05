@@ -142,14 +142,14 @@ function DmDemo() {
           </div>
         )}
         {step === 2 && (
-          <div className="lp-rise flex max-w-[60%] items-center gap-1.5 self-end rounded-2xl rounded-tr-md bg-accent px-3.5 py-3">
+          <div className="lp-rise flex max-w-[60%] items-center gap-1.5 self-end rounded-2xl rounded-tr-md bg-accent lp-btn-grad px-3.5 py-3">
             <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-on-accent [animation-delay:-0.2s]" />
             <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-on-accent [animation-delay:-0.1s]" />
             <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-on-accent" />
           </div>
         )}
         {step >= 3 && (
-          <div key={`re-${scene}`} className="lp-rise max-w-[82%] self-end rounded-2xl rounded-tr-md bg-accent px-3.5 py-2.5 text-sm text-on-accent">
+          <div key={`re-${scene}`} className="lp-rise max-w-[82%] self-end rounded-2xl rounded-tr-md bg-accent lp-btn-grad px-3.5 py-2.5 text-sm text-on-accent">
             {s.reply}
           </div>
         )}
@@ -283,18 +283,18 @@ function LaunchModes() {
           </div>
         </Reveal>
 
-        {/* переключатель режимов */}
-        <Reveal delay={80} className="mt-8 inline-flex flex-wrap gap-1 rounded-full border border-line bg-panel p-1">
+        {/* переключатель режимов: на мобиле — аккуратная стопка, на десктопе — пилюля */}
+        <Reveal delay={80} className="mt-8 flex w-full flex-col gap-1 rounded-2xl border border-line bg-panel p-1 sm:inline-flex sm:w-auto sm:flex-row sm:rounded-full">
           {MODES.map((x, i) => (
             <button
               key={x.key}
               onClick={() => setM(i)}
               className={cn(
-                'inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm transition-colors',
-                m === i ? 'bg-accent text-on-accent' : 'text-muted hover:text-text',
+                'inline-flex w-full items-center justify-between gap-2 rounded-xl px-4 py-2.5 text-sm transition-colors sm:w-auto sm:justify-center sm:rounded-full sm:py-2',
+                m === i ? 'bg-accent lp-btn-grad text-on-accent' : 'text-muted hover:text-text',
               )}
             >
-              <x.icon size={15} /> {x.label}
+              <span className="inline-flex items-center gap-2"><x.icon size={15} /> {x.label}</span>
               <span className={cn('rounded-full px-1.5 py-0.5 text-[10px] font-medium', m === i ? 'bg-on-accent/15 text-on-accent' : 'bg-accent-soft text-accent-ink')}>{x.badge}</span>
             </button>
           ))}
@@ -379,7 +379,7 @@ function Bento() {
           <BentoTile wide icon={MessageSquare} title="Авто-отбивка в директе" text="Отвечает на кодовые слова под твоей сессией Threads — пока конкуренты вручную листают отклики, у тебя уже назначены тесты.">
             <div className="rounded-xl border border-line bg-bg p-3">
               <div className="max-w-[80%] rounded-2xl rounded-tl-md bg-panel-2 px-3 py-2 text-xs">Привет, делаю <mark className="rounded bg-accent-soft px-1 text-accent-ink">монтаж</mark> 🎬</div>
-              <div className="mt-2 ml-auto max-w-[80%] rounded-2xl rounded-tr-md bg-accent px-3 py-2 text-xs text-on-accent">Класс! Лови бриф и тест 👇</div>
+              <div className="mt-2 ml-auto max-w-[80%] rounded-2xl rounded-tr-md bg-accent lp-btn-grad px-3 py-2 text-xs text-on-accent">Класс! Лови бриф и тест 👇</div>
             </div>
           </BentoTile>
 
@@ -460,7 +460,7 @@ function Comparison() {
                     <div className="flex flex-col gap-1.5">
                       <span className={cn('font-display text-[15px] font-semibold leading-tight', i === 0 ? 'text-accent-ink' : 'text-text')}>{c}</span>
                       {i === 0 && (
-                        <span className="w-fit whitespace-nowrap rounded-full bg-accent px-2 py-0.5 text-[10px] font-medium text-on-accent">лучший выбор</span>
+                        <span className="w-fit whitespace-nowrap rounded-full bg-accent lp-btn-grad px-2 py-0.5 text-[10px] font-medium text-on-accent">лучший выбор</span>
                       )}
                     </div>
                   </th>
@@ -529,7 +529,7 @@ function ValueCalculator() {
             <div className="mt-1 flex justify-between font-mono text-[10px] text-muted"><span>10</span><span>500</span></div>
           </div>
           <p className="mt-5 text-[11px] leading-relaxed text-muted">Оценка: ~3 минуты на ручной ответ и ~40% откликов, которые теряются без мгновенной отбивки. Реальная выгода зависит от ниши и оффера.</p>
-          <a href={CTA_HREF} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press">
+          <a href={CTA_HREF} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent lp-btn-grad px-5 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press">
             {CTA_LABEL} <ArrowRight size={15} />
           </a>
         </Reveal>
@@ -574,7 +574,7 @@ function Pricing() {
             const pct = savingsPctOf(p, cur);
             return (
               <Reveal key={p.key} delay={i * 90} className={cn('relative flex flex-col rounded-2xl border bg-panel p-7', p.highlight ? 'border-accent/60 shadow-[0_0_40px_-12px_var(--accent-soft)]' : 'border-line')}>
-                {p.highlight && <span className="absolute -top-3 left-7 rounded-full bg-accent px-3 py-1 text-[11px] font-medium text-on-accent">Популярный</span>}
+                {p.highlight && <span className="absolute -top-3 left-7 rounded-full bg-accent lp-btn-grad px-3 py-1 text-[11px] font-medium text-on-accent">Популярный</span>}
                 <div className="font-display text-xl font-bold">{p.name}</div>
                 <div className="mt-1 text-sm text-muted">{p.tagline}</div>
                 <div className="mt-5 flex items-end gap-1.5">
@@ -584,7 +584,7 @@ function Pricing() {
                 <div className="mt-1 h-4 text-xs text-accent-ink">
                   {p.key !== 'FREE' && annual ? `при оплате за год · экономия ${pct}%` : ''}
                 </div>
-                <a href={CTA_HREF} className={cn('mt-5 inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-colors', p.highlight ? 'bg-accent text-on-accent hover:bg-accent-press' : 'border border-line text-text hover:bg-panel-2')}>
+                <a href={CTA_HREF} className={cn('mt-5 inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-colors', p.highlight ? 'bg-accent lp-btn-grad text-on-accent hover:bg-accent-press' : 'border border-line text-text hover:bg-panel-2')}>
                   {p.key === 'FREE' ? 'Попробовать' : 'Выбрать ' + p.name} <ArrowRight size={15} />
                 </a>
                 <ul className="mt-6 space-y-2.5 border-t border-line pt-6">
@@ -751,16 +751,16 @@ function FounderNote() {
             </div>
             <div className="mt-7 flex items-center gap-3">
               <span className="relative grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-full bg-accent-soft text-sm font-semibold text-accent-ink">
-                А
+                A
                 <img
                   src="/founder.jpg"
-                  alt="Основатель Threadhunt"
+                  alt="Alex — основатель Threadhunt"
                   className="absolute inset-0 h-full w-full object-cover"
                   onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
                 />
               </span>
               <div>
-                <div className="font-medium">Алексей</div>
+                <div className="font-medium">Alex</div>
                 <div className="text-sm text-muted">основатель Threadhunt</div>
               </div>
             </div>
@@ -882,7 +882,7 @@ function Referral() {
                 <div className="mt-1 flex justify-between font-mono text-[10px] text-muted"><span>1</span><span>50</span></div>
               </div>
               <p className="mt-5 text-[11px] leading-relaxed text-muted">Оценка при среднем чеке Pro (1 490 ₽) и ставке 25% пожизненно. Выплаты — с фактических платежей рефералов.</p>
-              <a href={CTA_HREF} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press">
+              <a href={CTA_HREF} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent lp-btn-grad px-5 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press">
                 Получить реф-ссылку <ArrowRight size={15} />
               </a>
             </div>
@@ -975,7 +975,7 @@ function Sandbox() {
             />
             <button
               onClick={() => setV((x) => x + 1)}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-accent lp-btn-grad px-5 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press"
             >
               Сгенерировать ещё <RefreshCw size={15} />
             </button>
@@ -1012,7 +1012,7 @@ function Sandbox() {
                   <Zap size={12} className="text-accent-ink" /> совпало кодовое слово · <span className="text-accent-ink">{word}</span>
                 </span>
               </div>
-              <div className="mt-2.5 ml-auto max-w-[82%] rounded-2xl rounded-tr-md bg-accent px-3.5 py-2.5 text-sm text-on-accent">{reply}</div>
+              <div className="mt-2.5 ml-auto max-w-[82%] rounded-2xl rounded-tr-md bg-accent lp-btn-grad px-3.5 py-2.5 text-sm text-on-accent">{reply}</div>
             </div>
           </div>
           <p className="mt-4 text-center text-[11px] text-muted">Это демо-генерация на лету. В кабинете тексты пишет Claude в голосе твоего бренда.</p>
@@ -1054,7 +1054,7 @@ export function Landing() {
             {PRELAUNCH && <span className="hidden rounded-full border border-accent/40 bg-accent-soft px-2.5 py-1 text-[11px] font-medium text-accent-ink sm:inline">ранний доступ</span>}
             <ThemeToggle />
             {!PRELAUNCH && <a href={LOGIN} className="hidden rounded-full px-4 py-2 text-sm text-muted transition-colors hover:text-text sm:block">Войти</a>}
-            <a href={CTA_HREF} className="inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press">
+            <a href={CTA_HREF} className="inline-flex items-center gap-1.5 rounded-full bg-accent lp-btn-grad px-4 py-2 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press">
               <span className="hidden sm:inline">{CTA_LABEL}</span><span className="sm:hidden">{PRELAUNCH ? 'Лист' : 'Старт'}</span> <ArrowRight size={15} />
             </a>
           </div>
@@ -1089,7 +1089,7 @@ export function Landing() {
             </Reveal>
             <Reveal delay={240}>
               <div className="mt-7 flex flex-wrap items-center gap-3">
-                <a href={CTA_HREF} className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press">
+                <a href={CTA_HREF} className="inline-flex items-center gap-2 rounded-full bg-accent lp-btn-grad px-6 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press">
                   {CTA_LABEL} <ArrowRight size={16} />
                 </a>
                 <a href="#how" className="inline-flex items-center gap-2 rounded-full border border-line px-6 py-3 text-sm text-text transition-colors hover:bg-panel-2">
@@ -1193,7 +1193,7 @@ export function Landing() {
             <h2 className="font-display text-4xl font-bold tracking-tight md:text-5xl">Запусти найм за пару минут</h2>
             <p className="mx-auto mt-4 max-w-md text-muted">Создай первый поиск, поставь расширение и лови первых кандидатов уже сегодня. Free — навсегда, карта не нужна.</p>
             <div className="mt-8 flex justify-center">
-              <a href={CTA_HREF} className="inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3.5 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press">
+              <a href={CTA_HREF} className="inline-flex items-center gap-2 rounded-full bg-accent lp-btn-grad px-7 py-3.5 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press">
                 Начать бесплатно <ArrowRight size={16} />
               </a>
             </div>

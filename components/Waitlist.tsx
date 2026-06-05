@@ -143,7 +143,7 @@ export function Waitlist() {
                 <button
                   type="submit"
                   disabled={busy}
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press disabled:opacity-50"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-accent lp-btn-grad px-6 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press disabled:opacity-50"
                 >
                   {busy ? '...' : 'Занять место'} <ArrowRight size={15} />
                 </button>
@@ -169,7 +169,7 @@ export function Waitlist() {
               <>
                 <a
                   href={TELEGRAM_BOT_URL}
-                  className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press"
+                  className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-accent lp-btn-grad px-6 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press"
                 >
                   <Send size={15} /> Перейти в Telegram-бота
                 </a>

@@ -43,7 +43,7 @@ export function CookieConsent() {
           </button>
           <button
             onClick={() => decide('all')}
-            className="rounded-full bg-accent px-4 py-2 text-xs font-medium text-on-accent transition-colors hover:bg-accent-press"
+            className="rounded-full bg-accent lp-btn-grad px-4 py-2 text-xs font-medium text-on-accent transition-colors hover:bg-accent-press"
           >
             Принять все
           </button>
