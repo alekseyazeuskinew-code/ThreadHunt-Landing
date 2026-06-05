@@ -126,3 +126,41 @@ export function AnimatedBars({ heights = [40, 62, 48, 80, 58, 94, 70, 84] }: { h
     </div>
   );
 }
+
+/* ── TypeOnce: печатает текст один раз при попадании во вьюпорт ──────────── */
+export function TypeOnce({ text, speed = 16, className }: { text: string; speed?: number; className?: string }) {
+  const ref = useRef<HTMLSpanElement | null>(null);
+  const [shown, setShown] = useState(0);
+  const [started, setStarted] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setShown(text.length);
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setStarted(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.3 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [text]);
+  useEffect(() => {
+    if (!started || shown >= text.length) return;
+    const t = setTimeout(() => setShown((s) => s + 1), speed);
+    return () => clearTimeout(t);
+  }, [started, shown, text, speed]);
+  const done = shown >= text.length;
+  return (
+    <span ref={ref} className={className}>
+      {text.slice(0, shown)}
+      {!done && <span className="lp-caret text-accent-ink">▍</span>}
+    </span>
+  );
+}

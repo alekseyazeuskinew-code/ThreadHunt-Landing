@@ -128,7 +128,7 @@ export function Waitlist() {
                 value={telegram}
                 onChange={(e) => setTelegram(e.target.value)}
                 placeholder="@username в Telegram"
-                className="w-full rounded-full border border-line bg-panel px-5 py-3 text-sm outline-none transition-colors focus:border-accent"
+                className="lp-field w-full rounded-full border border-line bg-panel px-5 py-3 text-sm outline-none transition-colors focus:border-accent"
               />
               <div className="flex flex-col gap-3 sm:flex-row">
                 <input
@@ -138,7 +138,7 @@ export function Waitlist() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="email@example.com"
-                  className="w-full flex-1 rounded-full border border-line bg-panel px-5 py-3 text-sm outline-none transition-colors focus:border-accent"
+                  className="lp-field w-full flex-1 rounded-full border border-line bg-panel px-5 py-3 text-sm outline-none transition-colors focus:border-accent"
                 />
                 <button
                   type="submit"

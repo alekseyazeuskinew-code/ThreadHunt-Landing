@@ -155,3 +155,16 @@
 .lp-acc { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.32s cubic-bezier(0.16, 1, 0.3, 1); }
 .lp-acc.open { grid-template-rows: 1fr; }
 .lp-acc > div { overflow: hidden; }
+
+/* Поля формы — мягкое лаймовое мерцание-ободок, чтобы привлекать внимание. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes lp-field-glow {
+    0%, 100% { box-shadow: 0 0 0 1px var(--border); }
+    50% { box-shadow: 0 0 0 1px var(--accent), 0 0 16px 0 rgba(198, 242, 78, 0.25); }
+  }
+  .lp-field { animation: lp-field-glow 2.8s ease-in-out infinite; }
+}
+.lp-field:focus {
+  animation: none;
+  box-shadow: 0 0 0 1px var(--accent), 0 0 16px 0 rgba(198, 242, 78, 0.3);
+}

@@ -47,7 +47,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { DemoConsole } from '@/components/landing/DemoConsole';
 import { StickyCta } from '@/components/StickyCta';
 import { ReadingProgress } from '@/components/ReadingProgress';
-import { Reveal, Counter, TypingText, AnimatedBars } from '@/components/landing/primitives';
+import { Reveal, Counter, TypingText, AnimatedBars, TypeOnce } from '@/components/landing/primitives';
 import { cn } from '@/lib/cn';
 import { PLANS, CURRENCIES, monthlyOf, formatPrice, savingsPctOf, type Currency } from '@/lib/plans';
 import { LEGAL } from '@/lib/legal';
@@ -540,7 +540,7 @@ function ValueCalculator() {
 
 /* ── Тарифы ────────────────────────────────────────────────────────────── */
 function Pricing() {
-  const [cur, setCur] = useState<Currency>('RUB');
+  const [cur, setCur] = useState<Currency>('USD');
   const [annual, setAnnual] = useState(false);
   return (
     <section id="pricing" className="border-t border-line bg-panel/30">
@@ -735,6 +735,8 @@ function Audience() {
 }
 
 /* ── От основателя (build-in-public) ───────────────────────────────────── */
+const FOUNDER_TEXT =
+  'Я сам годами собирал команды подрядчиков вручную — и видел, как лучшие кандидаты теряются в директе, пока отвечаешь по одному. Threadhunt — это инструмент, которого мне не хватало: он ловит и квалифицирует людей сам. Мы строим его в открытую и хотим, чтобы первые пользователи получили максимум — поэтому ранний доступ со скидкой.';
 function FounderNote() {
   return (
     <section className="border-t border-line bg-panel/30">
@@ -742,17 +744,24 @@ function FounderNote() {
         <Reveal>
           <div className="relative rounded-2xl border border-line bg-panel p-8 md:p-10">
             <Quote size={40} className="absolute -top-4 left-8 text-accent-ink opacity-40" />
-            <p className="relative text-lg leading-relaxed md:text-xl">
-              Я сам годами собирал команды подрядчиков вручную — и видел, как лучшие кандидаты теряются в директе, пока
-              отвечаешь по одному. Threadhunt — это инструмент, которого мне не хватало: он ловит и квалифицирует людей
-              сам. Мы строим его в открытую и хотим, чтобы первые пользователи получили максимум — поэтому ранний доступ
-              со скидкой.
-            </p>
+            {/* невидимая копия резервирует высоту, печатающийся текст — поверх (без скачка вёрстки) */}
+            <div className="relative text-lg leading-relaxed md:text-xl">
+              <p className="invisible" aria-hidden>{FOUNDER_TEXT}</p>
+              <p className="absolute inset-0"><TypeOnce text={FOUNDER_TEXT} /></p>
+            </div>
             <div className="mt-7 flex items-center gap-3">
-              <span className="grid h-11 w-11 place-items-center rounded-full bg-accent-soft font-semibold text-accent-ink">AY</span>
+              <span className="relative grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-full bg-accent-soft text-sm font-semibold text-accent-ink">
+                А
+                <img
+                  src="/founder.jpg"
+                  alt="Основатель Threadhunt"
+                  className="absolute inset-0 h-full w-full object-cover"
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                />
+              </span>
               <div>
                 <div className="font-medium">Алексей</div>
-                <div className="text-sm text-muted">основатель Threadhunt · TARGETPOINT</div>
+                <div className="text-sm text-muted">основатель Threadhunt</div>
               </div>
             </div>
           </div>
@@ -885,21 +894,53 @@ function Referral() {
 }
 
 /* ── Живая ИИ-песочница: кодовое слово → приманка + авто-ответ ──────────── */
-const ROLE_MAP: Record<string, { label: string; plural: string; emoji: string }> = {
-  'монтаж': { label: 'видеомонтажёра', plural: 'Видеомонтажёры', emoji: '🎬' },
-  'таргет': { label: 'таргетолога', plural: 'Таргетологи', emoji: '🎯' },
-  'python': { label: 'Python-разработчика', plural: 'Python-разработчики', emoji: '🐍' },
-  'дизайн': { label: 'дизайнера', plural: 'Дизайнеры', emoji: '🎨' },
-  'smm': { label: 'SMM-специалиста', plural: 'SMM-щики', emoji: '📱' },
-  'копирайт': { label: 'копирайтера', plural: 'Копирайтеры', emoji: '✍️' },
-  'motion': { label: 'motion-дизайнера', plural: 'Motion-дизайнеры', emoji: '🎞️' },
-  'куратор': { label: 'куратора', plural: 'Кураторы', emoji: '🎓' },
-  'ассистент': { label: 'ассистента', plural: 'Ассистенты', emoji: '🤝' },
+type Role = { emoji: string; baits: (w: string) => string[] };
+const ROLE_MAP: Record<string, Role> = {
+  'монтаж': { emoji: '🎬', baits: (w) => [
+    `Тредссс, найди мне монтажёра 🎬 Режу Reels пачками — нужен человек с насмотренностью, чтобы отличать топ-склейку от «и так сойдёт». Удалёнка, плачу вовремя.\nКодовое «${w}» в директ 🤝`,
+    `Монтажёры, вы тут?????? Отзовитесь!!! Беру 1-2 на постоянку, 15-20 роликов в неделю. Деньги вовремя, без душнилова.\nКидай портфолио и слово «${w}» в директ 🎬`,
+  ] },
+  'таргет': { emoji: '🎯', baits: (w) => [
+    `Коллеги-таргетологи, найдитесь 🙏 Расширяю трафик-команду — нужен ассистент с горящими глазами. У нас сильная база и отделы дизайна+видео.\nСтавь «${w}» в директ — пришлю бриф 💪`,
+    `Тредс, ну где мои таргетологи 😤 Ищу того, кто живёт аукционом и не боится тестов. Вертикали, бюджеты, рост.\nПиши «${w}» — отправлю условия 🎯`,
+  ] },
+  'python': { emoji: '🐍', baits: (w) => [
+    `Питонисты, ауу 🐍 Нужен backend на FastAPI в проект на 3 мес (можно дольше). Чистый код, без легаси-боли.\nКидай гитхаб и слово «${w}» в директ.`,
+    `Тредс, найди мне разраба на Python, который не боится дедлайнов. Удалёнка, адекватный тимлид, задачи интересные.\nКодовое «${w}» в директ — расскажу детали 👨‍💻`,
+  ] },
+  'дизайн': { emoji: '🎨', baits: (w) => [
+    `Дизайнеры карточек и инфографики, вы Тут?????? Отзовитесь!!! Беру 2 на постоянку, 15-20 креативов в неделю, 500₽ за слайд.\nРаботы + слово «${w}» в директ 🎨`,
+    `Тредс, нужен дизайнер с насмотренностью — отличать «вау» от «фу» 😅 Команда, потоковые задачи, рост по деньгам.\nПиши «${w}» в директ, покажу примеры.`,
+  ] },
+  'smm': { emoji: '📱', baits: (w) => [
+    `SMM-щики, залетайте 📱 Нужен человек вести соцсети без воды и душных рубрик. Контент-план, Reels, чуть магии.\nКодовое «${w}» в директ — обсудим.`,
+    `Тредс, найди SMM, который умеет в смыслы, а не «доброе утро, друзья» ☀️ Постоянка, нормальные деньги.\nПиши «${w}» в директ.`,
+  ] },
+  'копирайт': { emoji: '✍️', baits: (w) => [
+    `Копирайтеры с цепляющими текстами — сюда ✍️ Нужен на потоковые офферы и креативы. Без штампов и «динамично развивающейся компании».\nСлово «${w}» в директ.`,
+    `Тредс, ищу копирайтера, у которого крючки в крови 🪝 Реклама, лиды, продающие связки.\nПиши «${w}» — пришлю тестовое.`,
+  ] },
+  'motion': { emoji: '🎞️', baits: (w) => [
+    `Моушн-дизайнеры, вы где 🎞️ Нужен на динамичные креативы и интро — анимация, которая продаёт.\nКодовое «${w}» в директ, покажу референсы.`,
+    `Тредс, найди моушнера, который оживит статику 🔥 Потоковые задачи, команда, деньги вовремя.\nПиши «${w}» в директ.`,
+  ] },
+  'куратор': { emoji: '🎓', baits: (w) => [
+    `Кураторы онлайн-школ, ау 🎓 Ищу того, кто доводит учеников до результата, а не просто «отметился». Постоянка, тёплая команда.\nСлово «${w}» в директ.`,
+    `Тредс, нужен куратор с эмпатией и системностью — поддержка учеников, чаты, дисциплина.\nПиши «${w}» в директ, расскажу.`,
+  ] },
+  'ассистент': { emoji: '🤝', baits: (w) => [
+    `Тредсс, найди ассистента с шилом в попе 🤝 Нужен с насмотренностью: нейронки, эксель, отличить г-дизайн от не г, собрать хаос в порядок.\nПиши «${w}» в директ.`,
+    `Бизнес-ассистент, ты тут? Занятость 5/2 (для начала 3 часа в день). Ответственность, быть на связи, любовь к делу.\nКодовое «${w}» в директ 🤝`,
+  ] },
 };
-function roleFor(kw: string) {
+const GENERIC_ROLE: Role = { emoji: '✨', baits: (w) => [
+  `Тредс, найди мне толкового спеца 🙏 Беру в команду на постоянку — с насмотренностью и горящими глазами. Скинь другу, если в поисках 👀\nПиши «${w}» в директ.`,
+  `Эй, кто шарит — вы тут?????? Отзовитесь!!! 🔥 Потоковые задачи, плачу вовремя, без бюрократии.\nКодовое «${w}» в директ — пришлю детали.`,
+] };
+function roleFor(kw: string): Role {
   const k = kw.trim().toLowerCase();
   for (const key of Object.keys(ROLE_MAP)) if (k.includes(key)) return ROLE_MAP[key];
-  return { label: 'специалиста', plural: 'Специалисты', emoji: '✨' };
+  return GENERIC_ROLE;
 }
 function Sandbox() {
   const presets = ['монтаж', 'таргет', 'python', 'дизайн', 'SMM', 'копирайт'];
@@ -907,11 +948,7 @@ function Sandbox() {
   const [v, setV] = useState(0);
   const role = roleFor(kw);
   const word = kw.trim() || 'кодовое слово';
-  const baits = [
-    `Тредс, найди мне ${role.label} 🙏 Беру в команду на постоянку — с насмотренностью и горящими глазами. Скинь другу/подруге, если в поисках 👀\nПиши «${word}» в директ — там пришлю детали. ${role.emoji}`,
-    `${role.plural}, вы тут?????? Отзовитесь!!! 🔥 Беру на потоковые задачи, плачу вовремя, без созвонов и бюрократии.\nКодовое слово «${word}» в директ — пришлю бриф.`,
-    `Расширяем трафик-команду, ищу ${role.label} 💪\nУ нас: сильная база, отделы дизайна и видео, чёткая структура. Горят глаза учиться — велком.\nПиши «${word}» в директ — отправлю бриф. Держу пару дней ⏳`,
-  ];
+  const baits = role.baits(word);
   const replies = [
     'Огонь, что откликнулся! 🙌 Лови короткий бриф и тестовое — глянь и скажи, берёшься?',
     'Кайф! Держи детали и мини-тест 👇 если ок — двигаемся дальше 🚀',
