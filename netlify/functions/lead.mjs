@@ -1,7 +1,9 @@
-// Conversions API (серверное событие Lead) для Meta.
-// Токен и Pixel ID берутся ТОЛЬКО из переменных окружения Netlify:
-//   META_PIXEL_ID, META_CAPI_TOKEN  (НЕ хардкодить в коде).
+// Conversions API (серверное событие Lead) для Meta + DURABLE-капча заявки в
+// Netlify Blobs. Blobs не зависят от нашего бэкенда (Railway) — поэтому заявка НЕ
+// теряется, даже если сервер/БД лежат. Потом админка тянет их кнопкой «Синхронизировать».
+// Env (Netlify): META_PIXEL_ID, META_CAPI_TOKEN (для Meta). Blobs доступны автоматически.
 import crypto from 'node:crypto';
+import { getStore } from '@netlify/blobs';
 
 const sha256 = (s) => crypto.createHash('sha256').update(s).digest('hex');
 const norm = (s) => (s || '').trim().toLowerCase();
@@ -9,14 +11,31 @@ const norm = (s) => (s || '').trim().toLowerCase();
 export default async (req, context) => {
   if (req.method !== 'POST') return new Response('Method Not Allowed', { status: 405 });
 
-  const PIXEL = process.env.META_PIXEL_ID;
-  const TOKEN = process.env.META_CAPI_TOKEN;
-  if (!PIXEL || !TOKEN) return Response.json({ error: 'not configured' }, { status: 500 });
-
   let body = {};
   try { body = await req.json(); } catch {}
   const email = norm(body.email);
   if (!email) return Response.json({ error: 'no email' }, { status: 400 });
+
+  // 1) DURABLE: сохраняем заявку в Blobs СРАЗУ (не зависит от Meta/Railway).
+  try {
+    const store = getStore('waitlist-leads');
+    const key = `${Date.now()}-${email}`;
+    await store.setJSON(key, {
+      email,
+      name: body.name || null,
+      source: body.source || 'landing',
+      url: body.url || null,
+      ts: new Date().toISOString(),
+    });
+  } catch (e) {
+    // не критично для пользователя — основной путь всё равно идёт в наш API
+    console.error('blobs save failed', String(e));
+  }
+
+  // 2) Meta CAPI — только если настроено (иначе тихо пропускаем, заявка уже в Blobs).
+  const PIXEL = process.env.META_PIXEL_ID;
+  const TOKEN = process.env.META_CAPI_TOKEN;
+  if (!PIXEL || !TOKEN) return Response.json({ ok: true, captured: true, meta: 'skipped' });
 
   const ip =
     context?.ip ||

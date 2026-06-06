@@ -39,7 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             (если пользователь явно не выбрал тёмную). */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('th_theme');var p=location.pathname;var isD=(p==='/d'||p==='/d/'||p.indexOf('/d/')===0);if(isD)document.documentElement.classList.add('theme-violet');if(t==='light'||(isD&&t!=='dark'))document.documentElement.setAttribute('data-theme','light');}catch(e){}})();`,
+            __html: `(function(){try{var t=localStorage.getItem('th_theme');var p=location.pathname;var isD=(p==='/d'||p==='/d/'||p.indexOf('/d/')===0);if(isD)document.documentElement.classList.add('theme-violet');if(isD||t==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();`,
           }}
         />
       </head>
