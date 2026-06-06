@@ -84,7 +84,9 @@ export function Waitlist() {
     try {
       const body = new URLSearchParams({ 'form-name': 'waitlist', name, email, source: 'landing' });
       if (WAITLIST_ENDPOINT) {
-        await fetch(WAITLIST_ENDPOINT, { method: 'POST', headers: { Accept: 'application/json' }, body });
+        // no-cors: «простой» кросс-доменный POST долетает до нашего API с любого
+        // домена без настройки CORS; ответ непрозрачный → успех показываем оптимистично.
+        await fetch(WAITLIST_ENDPOINT, { method: 'POST', mode: 'no-cors', body });
       } else {
         // Netlify Forms: POST на корень с urlencoded-телом.
         await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body });

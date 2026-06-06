@@ -8,7 +8,7 @@ export const LAUNCHED = false;
 //    (на сервере добавь домен лендинга в EXTRA_ORIGINS для CORS);
 //  — пусто '' → Netlify Forms (если хостишь на Netlify, заявки придут на почту);
 //  — либо URL Formspree/Getform/Tally.
-export const WAITLIST_ENDPOINT = '';
+export const WAITLIST_ENDPOINT = 'https://threadhuntserver-production.up.railway.app/api/waitlist';
 
 // Аналитика. Plausible — приватная (без личных данных), грузится только после
 // согласия на cookie. Пусто → выключена.
