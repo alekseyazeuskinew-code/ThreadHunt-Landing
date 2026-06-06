@@ -83,6 +83,14 @@ export function Waitlist() {
     setBusy(true);
     try {
       const body = new URLSearchParams({ 'form-name': 'waitlist', name, email, source: 'landing' });
+      // UTM-метки рекламы из ссылки (динамическая ссылка из Facebook Ads) → в заявку.
+      try {
+        const q = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+        for (const k of ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid']) {
+          const v = q.get(k);
+          if (v) body.set(k, v);
+        }
+      } catch {}
       if (WAITLIST_ENDPOINT) {
         // no-cors: «простой» кросс-доменный POST долетает до нашего API с любого
         // домена без настройки CORS; ответ непрозрачный → успех показываем оптимистично.

@@ -178,6 +178,18 @@
   filter: brightness(1.06);
 }
 
+/* Деликатный «маячок» на главной CTA: мягкий пульс-ободок раз в ~5с, с паузой —
+   напоминает о себе, но не отвлекает от чтения. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes lp-cta-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(198, 242, 78, 0.32); }
+    14% { box-shadow: 0 0 0 7px rgba(198, 242, 78, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(198, 242, 78, 0); }
+  }
+  .lp-cta-pulse { animation: lp-cta-pulse 5s ease-out infinite; }
+  .lp-cta-pulse:hover { animation: none; }
+}
+
 /* Лёгкое конфетти на экране успеха. */
 @media (prefers-reduced-motion: no-preference) {
   @keyframes lp-confetti {

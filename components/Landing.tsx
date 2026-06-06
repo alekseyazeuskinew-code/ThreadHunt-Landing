@@ -1054,7 +1054,7 @@ export function Landing() {
             {PRELAUNCH && <span className="hidden rounded-full border border-accent/40 bg-accent-soft px-2.5 py-1 text-[11px] font-medium text-accent-ink sm:inline">ранний доступ</span>}
             <ThemeToggle />
             {!PRELAUNCH && <a href={LOGIN} className="hidden rounded-full px-4 py-2 text-sm text-muted transition-colors hover:text-text sm:block">Войти</a>}
-            <a href={CTA_HREF} className="inline-flex items-center gap-1.5 rounded-full bg-accent lp-btn-grad px-4 py-2 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press">
+            <a href={CTA_HREF} className="lp-cta-pulse inline-flex items-center gap-1.5 rounded-full bg-accent lp-btn-grad px-4 py-2 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press">
               <span className="hidden sm:inline">{CTA_LABEL}</span><span className="sm:hidden">{PRELAUNCH ? 'Лист' : 'Старт'}</span> <ArrowRight size={15} />
             </a>
           </div>
@@ -1089,7 +1089,7 @@ export function Landing() {
             </Reveal>
             <Reveal delay={240}>
               <div className="mt-7 flex flex-wrap items-center gap-3">
-                <a href={CTA_HREF} className="inline-flex items-center gap-2 rounded-full bg-accent lp-btn-grad px-6 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press">
+                <a href={CTA_HREF} className="lp-cta-pulse inline-flex items-center gap-2 rounded-full bg-accent lp-btn-grad px-6 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press">
                   {CTA_LABEL} <ArrowRight size={16} />
                 </a>
                 <a href="#how" className="inline-flex items-center gap-2 rounded-full border border-line px-6 py-3 text-sm text-text transition-colors hover:bg-panel-2">
