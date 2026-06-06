@@ -146,7 +146,8 @@ function MiniFaq() {
 }
 
 /* ── Лендинг C (упрощённый) ─────────────────────────────────────────────── */
-export function LandingC() {
+// source — метка варианта для A/B (C → 'landing-c', D → 'landing-d' с другим цветом).
+export function LandingC({ source = 'landing-c' }: { source?: string } = {}) {
   return (
     <div className="min-h-screen">
       <ReadingProgress />
@@ -222,8 +223,8 @@ export function LandingC() {
       {/* ── ЧТО ПОЛУЧАЕШЬ ── */}
       <Benefits />
 
-      {/* ── ЛИСТ ОЖИДАНИЯ (source: landing-c) ── */}
-      {PRELAUNCH && <Waitlist source="landing-c" />}
+      {/* ── ЛИСТ ОЖИДАНИЯ (source — метка варианта) ── */}
+      {PRELAUNCH && <Waitlist source={source} />}
 
       {/* ── МИНИ-FAQ ── */}
       <MiniFaq />

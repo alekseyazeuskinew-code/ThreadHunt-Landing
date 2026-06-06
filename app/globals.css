@@ -202,3 +202,41 @@
     animation-fill-mode: forwards;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Вариант D (A/B-тест цвета): ФИОЛЕТОВЫЙ акцент вместо лайма.
+   Применяется классом .theme-violet на обёртке страницы /d.
+   Полностью изолирован — варианты A/B/C не затрагивает.
+   ══════════════════════════════════════════════════════════════════════════ */
+.theme-violet {
+  --accent: #6d5cf6;
+  --accent-press: #5b49e8;
+  --accent-soft: rgba(109, 92, 246, 0.16);
+  --on-accent: #ffffff;
+  --accent-ink: #a99bff; /* светлый фиолет — читаемо на тёмном фоне */
+}
+:root[data-theme='light'] .theme-violet {
+  --accent-soft: rgba(109, 92, 246, 0.12);
+  --accent-ink: #5b46d6; /* глубокий фиолет — читаемо на светлом фоне */
+}
+/* Градиент кнопок захардкожен лаймом — переопределяем на фиолетовый. */
+.theme-violet .lp-btn-grad {
+  background-image: linear-gradient(135deg, #8b7cff 0%, #6d5cf6 45%, #4733b8 100%);
+}
+/* Свечения полей и пульс CTA тоже на лайме — даём фиолетовые варианты. */
+.theme-violet .lp-field:focus {
+  box-shadow: 0 0 0 1px var(--accent), 0 0 16px 0 rgba(109, 92, 246, 0.3);
+}
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes lp-field-glow-violet {
+    0%, 100% { box-shadow: 0 0 0 1px var(--border); }
+    50% { box-shadow: 0 0 0 1px var(--accent), 0 0 16px 0 rgba(109, 92, 246, 0.25); }
+  }
+  .theme-violet .lp-field { animation-name: lp-field-glow-violet; }
+  @keyframes lp-cta-pulse-violet {
+    0% { box-shadow: 0 0 0 0 rgba(109, 92, 246, 0.32); }
+    14% { box-shadow: 0 0 0 7px rgba(109, 92, 246, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(109, 92, 246, 0); }
+  }
+  .theme-violet .lp-cta-pulse { animation-name: lp-cta-pulse-violet; }
+}
