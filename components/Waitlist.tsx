@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
-import { ArrowRight, Check, Sparkles, Lock } from 'lucide-react';
-import { WAITLIST_ENDPOINT, PROMO, TELEGRAM_BOT_URL } from '@/lib/config';
+import { useState, useMemo } from 'react';
+import { ArrowRight, Check, Sparkles, Lock, CalendarPlus } from 'lucide-react';
+import { WAITLIST_ENDPOINT, PROMO } from '@/lib/config';
 import { track } from '@/components/Analytics';
 import { trackLead } from '@/components/MetaPixel';
-import { Send } from 'lucide-react';
+import { Confetti } from '@/components/Confetti';
 
 // Чтение cookie (для fbp/fbc — улучшают матчинг в Meta).
 function getCookie(name: string): string | undefined {
@@ -14,16 +14,46 @@ function getCookie(name: string): string | undefined {
   return m ? decodeURIComponent(m[1]) : undefined;
 }
 
+// Напоминание через 3 недели: .ics (Apple/Outlook/любой календарь) + ссылка Google Календарь.
+function buildReminder() {
+  const start = new Date(Date.now() + 21 * 86_400_000);
+  start.setHours(12, 0, 0, 0);
+  const end = new Date(start.getTime() + 30 * 60_000);
+  const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+  const dtStart = fmt(start);
+  const dtEnd = fmt(end);
+  const esc = (s: string) => s.replace(/([,;])/g, '\\$1').replace(/\n/g, '\\n');
+  const title = 'Threadhunt — мой ранний доступ 🚀';
+  const details = `Я в листе ожидания Threadhunt. Промокод ${PROMO.code} — ${PROMO.benefit}. Загляни на thread-hunt.com — возможно, ранний доступ уже открыт.`;
+  const loc = 'https://thread-hunt.com';
+  const ics = [
+    'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Threadhunt//Waitlist//RU', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
+    'BEGIN:VEVENT',
+    `UID:${dtStart}-threadhunt@thread-hunt.com`,
+    `DTSTAMP:${fmt(new Date())}`,
+    `DTSTART:${dtStart}`,
+    `DTEND:${dtEnd}`,
+    `SUMMARY:${esc(title)}`,
+    `DESCRIPTION:${esc(details)}`,
+    `LOCATION:${esc(loc)}`,
+    'BEGIN:VALARM', 'TRIGGER:-PT30M', 'ACTION:DISPLAY', 'DESCRIPTION:Threadhunt', 'END:VALARM',
+    'END:VEVENT', 'END:VCALENDAR',
+  ].join('\r\n');
+  const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${dtStart}/${dtEnd}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(loc)}`;
+  const human = start.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
+  return { ics, gcalUrl, human };
+}
+
 // Форма листа ожидания. По умолчанию совместима с Netlify Forms (zero-backend),
 // либо отправляет на WAITLIST_ENDPOINT (Formspree/Getform/Tally).
 export function Waitlist() {
   const [email, setEmail] = useState('');
-  const [telegram, setTelegram] = useState('');
   const [name, setName] = useState('');
   const [done, setDone] = useState(false);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
   const [copied, setCopied] = useState(false);
+  const reminder = useMemo(buildReminder, [done]);
 
   function copyCode() {
     try {
@@ -33,12 +63,26 @@ export function Waitlist() {
     } catch {}
   }
 
+  function downloadIcs() {
+    try {
+      const blob = new Blob([reminder.ics], { type: 'text/calendar;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'threadhunt-reminder.ics';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+    } catch {}
+  }
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setErr('');
     setBusy(true);
     try {
-      const body = new URLSearchParams({ 'form-name': 'waitlist', name, email, telegram, source: 'landing' });
+      const body = new URLSearchParams({ 'form-name': 'waitlist', name, email, source: 'landing' });
       if (WAITLIST_ENDPOINT) {
         await fetch(WAITLIST_ENDPOINT, { method: 'POST', headers: { Accept: 'application/json' }, body });
       } else {
@@ -59,7 +103,6 @@ export function Waitlist() {
           body: JSON.stringify({
             email,
             name,
-            telegram,
             source: 'landing',
             eventId,
             url: typeof location !== 'undefined' ? location.href : '',
@@ -83,13 +126,15 @@ export function Waitlist() {
           <Sparkles size={13} /> Ранний доступ · фаза тестирования
         </span>
 
+        {done && <Confetti />}
+
         {!done ? (
           <>
             <h2 className="mt-5 font-display text-3xl font-bold tracking-tight md:text-5xl">
               Будь первым — и забери <span className="lp-gradient-text">−50%</span>
             </h2>
             <p className="mx-auto mt-4 max-w-md text-muted">
-              Сервис на финальной доводке. Оставь почту и Telegram — {PROMO.limit} даём промокод{' '}
+              Сервис на финальной доводке. Оставь почту — {PROMO.limit} даём промокод{' '}
               <span className="text-accent-ink">{PROMO.benefit}</span> и доступ раньше всех. Напомним один раз по почте, без спама.
             </p>
 
@@ -125,14 +170,6 @@ export function Waitlist() {
                 placeholder="Имя (по желанию)"
                 className="w-full rounded-full border border-line bg-panel px-5 py-3 text-sm outline-none transition-colors focus:border-accent"
               />
-              <input
-                name="telegram"
-                required
-                value={telegram}
-                onChange={(e) => setTelegram(e.target.value)}
-                placeholder="@username в Telegram"
-                className="lp-field w-full rounded-full border border-line bg-panel px-5 py-3 text-sm outline-none transition-colors focus:border-accent"
-              />
               <div className="flex flex-col gap-3 sm:flex-row">
                 <input
                   name="email"
@@ -158,7 +195,7 @@ export function Waitlist() {
             </form>
           </>
         ) : (
-          <div className="anim-pop mx-auto mt-8 max-w-md rounded-2xl border border-accent/40 bg-panel p-8 text-center shadow-[0_0_55px_-16px_var(--accent-soft)]">
+          <div className="anim-pop relative z-10 mx-auto mt-8 max-w-md rounded-2xl border border-accent/40 bg-panel p-8 text-center shadow-[0_0_55px_-16px_var(--accent-soft)]">
             <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-accent lp-btn-grad text-on-accent lp-ring">
               <Check size={26} />
             </span>
@@ -179,19 +216,26 @@ export function Waitlist() {
             </div>
 
             <p className="mx-auto mt-6 max-w-sm text-sm leading-relaxed text-muted">
-              Будем рады, если будешь следить за обновлениями. Напомним о себе <span className="text-text">один раз по почте</span> — без спама. И скоро позовём в наш Telegram 💚
+              Будем рады, если будешь следить за обновлениями. Напомним о себе <span className="text-text">один раз по почте</span> — без спама.
             </p>
 
-            {TELEGRAM_BOT_URL && (
+            <div className="mt-6 flex flex-col items-center gap-2">
+              <button
+                onClick={downloadIcs}
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-accent lp-btn-grad px-6 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press"
+              >
+                <CalendarPlus size={15} /> Напомнить через 3 недели
+              </button>
               <a
-                href={TELEGRAM_BOT_URL}
+                href={reminder.gcalUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-accent lp-btn-grad px-6 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press"
+                className="text-[11px] text-muted underline transition-colors hover:text-text"
               >
-                <Send size={15} /> Подписаться на Telegram
+                или добавить в Google Календарь
               </a>
-            )}
+              <div className="text-[11px] text-muted">поставим напоминание на {reminder.human}</div>
+            </div>
             <p className="mt-5 text-xs text-muted">Обнимаем и до связи 🫶</p>
           </div>
         )}

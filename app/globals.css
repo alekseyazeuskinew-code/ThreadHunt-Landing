@@ -177,3 +177,16 @@
 .lp-btn-grad:hover {
   filter: brightness(1.06);
 }
+
+/* Лёгкое конфетти на экране успеха. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes lp-confetti {
+    0% { transform: translateY(-24px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(460px) rotate(700deg); opacity: 0; }
+  }
+  .lp-confetti {
+    animation-name: lp-confetti;
+    animation-timing-function: cubic-bezier(0.2, 0.6, 0.4, 1);
+    animation-fill-mode: forwards;
+  }
+}
