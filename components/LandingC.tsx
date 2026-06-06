@@ -42,7 +42,7 @@ const STEPS: { icon: LucideIcon; t: string; d: string }[] = [
   { icon: KanbanSquare, t: 'Выбираешь лучших', d: 'Все кандидаты уже собраны в твоей воронке. Заходишь в кабинет и нанимаешь.' },
 ];
 
-function HowItWorks() {
+export function HowItWorks() {
   return (
     <section id="how" className="border-t border-line bg-panel/30">
       <div className="mx-auto max-w-3xl px-5 py-20 md:py-28">
@@ -88,7 +88,7 @@ const BENEFITS: { icon: LucideIcon; t: string; d: string }[] = [
   { icon: LayoutDashboard, t: 'Всё в одном кабинете', d: 'Кандидаты, тесты и воронка — в одном месте, без таблиц.' },
 ];
 
-function Benefits() {
+export function Benefits() {
   return (
     <section className="border-t border-line">
       <div className="mx-auto max-w-5xl px-5 py-20 md:py-24">
@@ -128,7 +128,7 @@ function MiniFaqItem({ q, a }: { q: string; a: string }) {
   );
 }
 
-function MiniFaq() {
+export function MiniFaq() {
   return (
     <section id="faq" className="border-t border-line bg-panel/30">
       <div className="mx-auto max-w-2xl px-5 py-20 md:py-24">
