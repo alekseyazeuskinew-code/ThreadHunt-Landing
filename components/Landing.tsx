@@ -57,14 +57,14 @@ import { Waitlist } from '@/components/Waitlist';
 /* Адрес кабинета (дашборда). Поменяй на боевой домен приложения. */
 const APP_URL = 'https://app.threadhunt.app';
 const SIGNUP = `${APP_URL}/signup`;
-const LOGIN = `${APP_URL}/login`;
+export const LOGIN = `${APP_URL}/login`;
 const TERMS = `${APP_URL}/terms`;
 const PRIVACY = '/privacy'; // собственная страница лендинга (с cookie-политикой)
 
 /* Пред-запуск: все основные CTA ведут в лист ожидания вместо регистрации. */
-const PRELAUNCH = !LAUNCHED;
-const CTA_HREF = PRELAUNCH ? '#waitlist' : SIGNUP;
-const CTA_LABEL = PRELAUNCH ? 'В лист ожидания' : 'Начать бесплатно';
+export const PRELAUNCH = !LAUNCHED;
+export const CTA_HREF = PRELAUNCH ? '#waitlist' : SIGNUP;
+export const CTA_LABEL = PRELAUNCH ? 'В лист ожидания' : 'Начать бесплатно';
 
 /* Пункты навигации (id секции → подсветка активной при скролле). */
 const NAV = [
@@ -100,7 +100,7 @@ function highlight(text: string, kw: string) {
   );
 }
 
-function DmDemo() {
+export function DmDemo() {
   const [scene, setScene] = useState(0);
   const [step, setStep] = useState(0);
   useEffect(() => {
@@ -172,7 +172,7 @@ function DmDemo() {
 
 /* ── Бегущая строка кодовых слов ───────────────────────────────────────── */
 const KEYWORDS = ['монтаж', 'таргетолог', 'копирайтер', 'Python', 'SMM', 'дизайнер', 'моушн', 'продажи', 'Reels', 'ассистент', 'React', 'трафик'];
-function KeywordMarquee() {
+export function KeywordMarquee() {
   const row = [...KEYWORDS, ...KEYWORDS];
   return (
     <div className="lp-fade-x overflow-hidden py-2">
@@ -186,7 +186,7 @@ function KeywordMarquee() {
 }
 
 /* ── Видео в красивой рамке (2-й экран) ────────────────────────────────── */
-function VideoShowcase() {
+export function VideoShowcase() {
   return (
     <section id="video" className="relative overflow-hidden border-t border-line">
       <div className="pointer-events-none absolute left-1/2 top-1/2 h-[360px] w-[680px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/[0.06] blur-[120px] lp-glow" />
@@ -269,7 +269,7 @@ const MODES: { key: string; label: string; icon: LucideIcon; badge: string; tagl
   },
 ];
 
-function LaunchModes() {
+export function LaunchModes() {
   const [m, setM] = useState(0);
   const mode = MODES[m];
   return (
@@ -362,7 +362,7 @@ function BentoTile({
   );
 }
 
-function Bento() {
+export function Bento() {
   return (
     <section id="features" className="border-t border-line bg-panel/30">
       <div className="mx-auto max-w-6xl px-5 py-20 md:py-28">
@@ -440,7 +440,7 @@ function ToneIcon({ t }: { t: Tone }) {
   if (t === 'bad') return <X size={15} className="mt-0.5 shrink-0 text-danger/70" />;
   return <Minus size={15} className="mt-0.5 shrink-0 text-warning" />;
 }
-function Comparison() {
+export function Comparison() {
   return (
     <section id="compare" className="border-t border-line">
       <div className="mx-auto max-w-5xl px-5 py-20 md:py-28">
@@ -491,7 +491,7 @@ function Comparison() {
 }
 
 /* ── Калькулятор ценности ──────────────────────────────────────────────── */
-function ValueCalculator() {
+export function ValueCalculator() {
   const [replies, setReplies] = useState(80); // откликов в директе в неделю
   const hoursWeek = Math.round((replies * 3) / 60); // ~3 мин на ручной ответ
   const candMonth = Math.round(replies * 4 * 0.4); // ~40% теряется вручную
@@ -539,7 +539,7 @@ function ValueCalculator() {
 }
 
 /* ── Тарифы ────────────────────────────────────────────────────────────── */
-function Pricing() {
+export function Pricing() {
   const [cur, setCur] = useState<Currency>('USD');
   const [annual, setAnnual] = useState(false);
   return (
@@ -649,7 +649,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
     </div>
   );
 }
-function Faq() {
+export function Faq() {
   return (
     <section id="faq" className="border-t border-line">
       <div className="mx-auto max-w-3xl px-5 py-20 md:py-28">
@@ -671,7 +671,7 @@ function Faq() {
 }
 
 /* ── Стек: из чего собран продукт (роль каждой технологии) ──────────────── */
-function TrustStrip() {
+export function TrustStrip() {
   const items = [
     { name: 'Threads', role: 'где ловим' },
     { name: 'Meta Ads', role: 'реклама и лидген' },
@@ -707,7 +707,7 @@ const ICP: { icon: LucideIcon; t: string; d: string }[] = [
   { icon: Megaphone, t: 'Маркетинг-командам', d: 'Таргетологи, копирайтеры и дизайнеры — быстро и без бирж.' },
   { icon: Briefcase, t: 'Инфобизнесу', d: 'Подрядчики под любую задачу — быстрее и дешевле фриланс-бирж.' },
 ];
-function Audience() {
+export function Audience() {
   return (
     <section id="audience" className="border-t border-line">
       <div className="mx-auto max-w-6xl px-5 py-20 md:py-28">
@@ -737,7 +737,7 @@ function Audience() {
 /* ── От основателя (build-in-public) ───────────────────────────────────── */
 const FOUNDER_TEXT =
   'Я сам годами собирал команды подрядчиков вручную — и видел, как лучшие кандидаты теряются в директе, пока отвечаешь по одному. Threadhunt — это инструмент, которого мне не хватало: он ловит и квалифицирует людей сам. Мы строим его в открытую и хотим, чтобы первые пользователи получили максимум — поэтому ранний доступ со скидкой.';
-function FounderNote() {
+export function FounderNote() {
   return (
     <section className="border-t border-line bg-panel/30">
       <div className="mx-auto max-w-3xl px-5 py-20 md:py-24">
@@ -811,7 +811,7 @@ function FirstMover() {
 }
 
 /* ── Реферальная программа ─────────────────────────────────────────────── */
-function Referral() {
+export function Referral() {
   const [n, setN] = useState(8);
   const AVG = 1490; // средний чек Pro, ₽
   const RATE = 0.25; // 25% пожизненно
@@ -942,7 +942,7 @@ function roleFor(kw: string): Role {
   for (const key of Object.keys(ROLE_MAP)) if (k.includes(key)) return ROLE_MAP[key];
   return GENERIC_ROLE;
 }
-function Sandbox() {
+export function Sandbox() {
   const presets = ['монтаж', 'таргет', 'python', 'дизайн', 'SMM', 'копирайт'];
   const [kw, setKw] = useState('монтаж');
   const [v, setV] = useState(0);
@@ -1019,6 +1019,64 @@ function Sandbox() {
         </Reveal>
       </div>
     </section>
+  );
+}
+
+/* ── Футер + юридическое (общий для всех вариантов) ─────────────────────── */
+export function SiteFooter() {
+  return (
+    <footer className="border-t border-line">
+      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-5 py-12 md:flex-row md:items-start md:justify-between">
+        <div className="max-w-xs">
+          <div className="text-lg"><Wordmark /></div>
+          <p className="mt-3 text-sm text-muted">Лента Threads → поток кандидатов. VIP-хедхантинг на автопилоте.</p>
+        </div>
+        <div className="grid grid-cols-2 gap-x-12 gap-y-2 text-sm">
+          <div className="space-y-2">
+            <div className="font-medium">Продукт</div>
+            <a href="#demo" className="block text-muted transition-colors hover:text-text">Демо</a>
+            <a href="#features" className="block text-muted transition-colors hover:text-text">Возможности</a>
+            <a href="#pricing" className="block text-muted transition-colors hover:text-text">Тарифы</a>
+            <a href="#referral" className="block text-muted transition-colors hover:text-text">Партнёрам</a>
+            <a href="#faq" className="block text-muted transition-colors hover:text-text">Вопросы</a>
+          </div>
+          <div className="space-y-2">
+            <div className="font-medium">Аккаунт</div>
+            <a href={LOGIN} className="block text-muted transition-colors hover:text-text">Войти</a>
+            <a href={CTA_HREF} className="block text-muted transition-colors hover:text-text">Регистрация</a>
+            <a href={TERMS} className="block text-muted transition-colors hover:text-text">Условия</a>
+            <a href={PRIVACY} className="block text-muted transition-colors hover:text-text">Конфиденциальность</a>
+          </div>
+        </div>
+      </div>
+
+      {/* юридическая сводка (кратко) */}
+      <div className="border-t border-line">
+        <div className="mx-auto max-w-6xl px-5 py-6 text-xs leading-relaxed text-muted">
+          <span className="text-text">{LEGAL.company}</span> · {LEGAL.form} · VAT {LEGAL.vat} · {LEGAL.address} ·{' '}
+          <a href={`mailto:${LEGAL.email}`} className="text-accent-ink hover:underline">{LEGAL.email}</a>
+        </div>
+      </div>
+
+      {/* дисклеймер */}
+      <div className="border-t border-line">
+        <div className="mx-auto max-w-6xl px-5 py-6">
+          <p className="text-[11px] leading-relaxed text-muted/80">
+            Threadhunt — инструмент автоматизации действий пользователя в интерфейсе Threads: отбивка в директе работает
+            как эмуляция ручных операций в твоём браузере под твоей собственной сессией. Сервис не аффилирован с Meta
+            Platforms, Inc. и Threads, не гарантирует результат и не несёт ответственности за возможные ограничения,
+            временные или постоянные блокировки аккаунтов со стороны платформы. Использование автоматизации
+            осуществляется тобой самостоятельно и под твою ответственность, с соблюдением правил Threads/Meta и
+            применимого законодательства. Встроенные анти-бан механики (задержки, дневные лимиты, рабочее окно) снижают
+            риски, но не исключают их.
+          </p>
+        </div>
+      </div>
+
+      <div className="border-t border-line">
+        <div className="mx-auto max-w-6xl px-5 py-5 font-mono text-xs text-muted">© 2026 {LEGAL.company || 'Threadhunt'}</div>
+      </div>
+    </footer>
   );
 }
 
@@ -1202,58 +1260,7 @@ export function Landing() {
       </section>
 
       {/* ── ФУТЕР + ЮРИДИЧЕСКОЕ ── */}
-      <footer className="border-t border-line">
-        <div className="mx-auto flex max-w-6xl flex-col gap-8 px-5 py-12 md:flex-row md:items-start md:justify-between">
-          <div className="max-w-xs">
-            <div className="text-lg"><Wordmark /></div>
-            <p className="mt-3 text-sm text-muted">Лента Threads → поток кандидатов. VIP-хедхантинг на автопилоте.</p>
-          </div>
-          <div className="grid grid-cols-2 gap-x-12 gap-y-2 text-sm">
-            <div className="space-y-2">
-              <div className="font-medium">Продукт</div>
-              <a href="#demo" className="block text-muted transition-colors hover:text-text">Демо</a>
-              <a href="#features" className="block text-muted transition-colors hover:text-text">Возможности</a>
-              <a href="#pricing" className="block text-muted transition-colors hover:text-text">Тарифы</a>
-              <a href="#referral" className="block text-muted transition-colors hover:text-text">Партнёрам</a>
-              <a href="#faq" className="block text-muted transition-colors hover:text-text">Вопросы</a>
-            </div>
-            <div className="space-y-2">
-              <div className="font-medium">Аккаунт</div>
-              <a href={LOGIN} className="block text-muted transition-colors hover:text-text">Войти</a>
-              <a href={CTA_HREF} className="block text-muted transition-colors hover:text-text">Регистрация</a>
-              <a href={TERMS} className="block text-muted transition-colors hover:text-text">Условия</a>
-              <a href={PRIVACY} className="block text-muted transition-colors hover:text-text">Конфиденциальность</a>
-            </div>
-          </div>
-        </div>
-
-        {/* юридическая сводка (кратко) */}
-        <div className="border-t border-line">
-          <div className="mx-auto max-w-6xl px-5 py-6 text-xs leading-relaxed text-muted">
-            <span className="text-text">{LEGAL.company}</span> · {LEGAL.form} · VAT {LEGAL.vat} · {LEGAL.address} ·{' '}
-            <a href={`mailto:${LEGAL.email}`} className="text-accent-ink hover:underline">{LEGAL.email}</a>
-          </div>
-        </div>
-
-        {/* дисклеймер */}
-        <div className="border-t border-line">
-          <div className="mx-auto max-w-6xl px-5 py-6">
-            <p className="text-[11px] leading-relaxed text-muted/80">
-              Threadhunt — инструмент автоматизации действий пользователя в интерфейсе Threads: отбивка в директе работает
-              как эмуляция ручных операций в твоём браузере под твоей собственной сессией. Сервис не аффилирован с Meta
-              Platforms, Inc. и Threads, не гарантирует результат и не несёт ответственности за возможные ограничения,
-              временные или постоянные блокировки аккаунтов со стороны платформы. Использование автоматизации
-              осуществляется тобой самостоятельно и под твою ответственность, с соблюдением правил Threads/Meta и
-              применимого законодательства. Встроенные анти-бан механики (задержки, дневные лимиты, рабочее окно) снижают
-              риски, но не исключают их.
-            </p>
-          </div>
-        </div>
-
-        <div className="border-t border-line">
-          <div className="mx-auto max-w-6xl px-5 py-5 font-mono text-xs text-muted">© 2026 {LEGAL.company || 'Threadhunt'}</div>
-        </div>
-      </footer>
+      <SiteFooter />
 
       {/* ── ПРИЛИПАЮЩИЙ CTA (мобайл) ── */}
       <StickyCta href={CTA_HREF} label={CTA_LABEL} />

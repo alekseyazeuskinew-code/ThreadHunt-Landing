@@ -46,7 +46,9 @@ function buildReminder() {
 
 // Форма листа ожидания. По умолчанию совместима с Netlify Forms (zero-backend),
 // либо отправляет на WAITLIST_ENDPOINT (Formspree/Getform/Tally).
-export function Waitlist() {
+// source — метка варианта лендинга для A/B (напр. 'landing' | 'landing-b'),
+// прокидывается в заявку, аналитику и события Meta (browser + CAPI).
+export function Waitlist({ source = 'landing' }: { source?: string } = {}) {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [done, setDone] = useState(false);
@@ -82,7 +84,7 @@ export function Waitlist() {
     setErr('');
     setBusy(true);
     try {
-      const body = new URLSearchParams({ 'form-name': 'waitlist', name, email, source: 'landing' });
+      const body = new URLSearchParams({ 'form-name': 'waitlist', name, email, source });
       // UTM-метки рекламы из ссылки (динамическая ссылка из Facebook Ads) → в заявку.
       try {
         const q = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
@@ -100,11 +102,11 @@ export function Waitlist() {
         await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body });
       }
       setDone(true);
-      track('Waitlist Signup', { source: 'landing' });
+      track('Waitlist Signup', { source });
       // Дедуп браузер ↔ CAPI: один event_id на оба события.
       const eventId =
         typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `lead-${Date.now()}`;
-      trackLead({ content_name: 'Waitlist', source: 'landing' }, eventId);
+      trackLead({ content_name: 'Waitlist', source }, eventId);
       // Серверное событие через Netlify-функцию (если задеплоена с функциями).
       try {
         fetch('/.netlify/functions/lead', {
@@ -113,7 +115,7 @@ export function Waitlist() {
           body: JSON.stringify({
             email,
             name,
-            source: 'landing',
+            source,
             eventId,
             url: typeof location !== 'undefined' ? location.href : '',
             fbp: getCookie('_fbp'),
