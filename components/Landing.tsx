@@ -130,7 +130,7 @@ function DmDemo() {
           <span className="h-1.5 w-1.5 rounded-full bg-success lp-ring" /> отвечает сам
         </span>
       </div>
-      <div className="flex min-h-[244px] flex-col gap-2.5 p-4">
+      <div className="flex h-[300px] flex-col gap-2.5 overflow-hidden p-4">
         <div key={`in-${scene}`} className="lp-rise max-w-[82%] self-start rounded-2xl rounded-tl-md bg-panel-2 px-3.5 py-2.5 text-sm">
           {highlight(s.incoming, s.kw)}
         </div>
@@ -385,7 +385,7 @@ function Bento() {
 
           {/* живая плитка: ИИ */}
           <BentoTile wide icon={Sparkles} title="ИИ-генерация (Claude)" text="Посты, шаблоны ответов, тестовые задания и NDA — в голосе твоего бренда, а не шаблонно.">
-            <div className="rounded-xl border border-line bg-bg p-3 font-mono text-xs text-muted">
+            <div className="h-20 overflow-hidden rounded-xl border border-line bg-bg p-3 font-mono text-xs text-muted">
               <span className="text-accent-ink">ИИ пишет: </span>
               <TypingText
                 phrases={[
