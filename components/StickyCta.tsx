@@ -16,7 +16,8 @@ export function StickyCta({ href, label }: { href: string; label: string }) {
   return (
     <div
       className={cn(
-        'fixed inset-x-0 bottom-0 z-40 p-3 transition-transform duration-300 md:hidden',
+        // тёмная подложка снизу (from-bg) — чтобы строка Safari на iOS не тонировалась в лайм
+        'fixed inset-x-0 bottom-0 z-40 bg-gradient-to-t from-bg via-bg/90 to-transparent px-3 pb-4 pt-8 transition-transform duration-300 md:hidden',
         show ? 'translate-y-0' : 'translate-y-[120%]',
       )}
     >

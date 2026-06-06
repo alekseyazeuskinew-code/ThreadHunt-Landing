@@ -189,7 +189,7 @@ function KeywordMarquee() {
 function VideoShowcase() {
   return (
     <section id="video" className="relative overflow-hidden border-t border-line">
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[360px] w-[680px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/10 blur-[120px] lp-glow" />
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[360px] w-[680px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/[0.06] blur-[120px] lp-glow" />
       <div className="relative mx-auto max-w-4xl px-5 py-16 md:py-24">
         <Reveal className="mb-8 text-center">
           <div className="font-mono text-xs uppercase tracking-widest text-accent-ink">за 90 секунд</div>
@@ -776,7 +776,7 @@ function FirstMover() {
   const chips = ['директ Threads, не Instagram', 'первые на рынке', 'поток 24/7', 'любые профессии'];
   return (
     <section className="relative overflow-hidden border-t border-line bg-panel/30">
-      <div className="pointer-events-none absolute left-1/2 top-0 h-64 w-[680px] -translate-x-1/2 rounded-full bg-accent/10 blur-[120px] lp-glow" />
+      <div className="pointer-events-none absolute left-1/2 top-0 h-64 w-[680px] -translate-x-1/2 rounded-full bg-accent/[0.06] blur-[120px] lp-glow" />
       <div className="relative mx-auto max-w-4xl px-5 py-16 text-center md:py-24">
         <Reveal>
           <span className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent-soft px-3 py-1.5 text-xs font-medium text-accent-ink">
@@ -1064,9 +1064,9 @@ export function Landing() {
       {/* ── HERO (без изменений) ── */}
       <section id="top" className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0 lp-grid opacity-60" />
-        <div className="pointer-events-none absolute -top-32 left-1/2 h-[420px] w-[820px] -translate-x-1/2 rounded-full bg-accent/20 blur-[130px] lp-glow" />
-        <div className="pointer-events-none absolute -left-24 top-40 h-72 w-72 rounded-full bg-accent/10 blur-[100px] lp-float" />
-        <div className="pointer-events-none absolute -right-24 top-64 h-72 w-72 rounded-full bg-accent/10 blur-[100px] lp-float-slow" />
+        <div className="pointer-events-none absolute -top-32 left-1/2 h-[420px] w-[820px] -translate-x-1/2 rounded-full bg-accent/[0.12] blur-[130px] lp-glow" />
+        <div className="pointer-events-none absolute -left-24 top-40 h-72 w-72 rounded-full bg-accent/[0.06] blur-[100px] lp-float" />
+        <div className="pointer-events-none absolute -right-24 top-64 h-72 w-72 rounded-full bg-accent/[0.06] blur-[100px] lp-float-slow" />
 
         <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 pb-16 pt-16 md:grid-cols-2 md:pb-24 md:pt-24">
           <div>
@@ -1187,7 +1187,7 @@ export function Landing() {
 
       {/* ── ФИНАЛЬНЫЙ CTA ── */}
       <section className="relative overflow-hidden border-t border-line">
-        <div className="pointer-events-none absolute inset-x-0 -bottom-24 mx-auto h-72 w-[820px] rounded-full bg-accent/15 blur-[120px] lp-glow" />
+        <div className="pointer-events-none absolute inset-x-0 -bottom-24 mx-auto h-72 w-[820px] rounded-full bg-accent/[0.08] blur-[120px] lp-glow" />
         <div className="relative mx-auto max-w-3xl px-5 py-24 text-center md:py-32">
           <Reveal>
             <h2 className="font-display text-4xl font-bold tracking-tight md:text-5xl">Запусти найм за пару минут</h2>

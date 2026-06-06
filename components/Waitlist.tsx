@@ -122,7 +122,7 @@ export function Waitlist() {
 
   return (
     <section id="waitlist" className="relative overflow-hidden border-b border-line">
-      <div className="pointer-events-none absolute left-1/2 top-0 h-[320px] w-[680px] -translate-x-1/2 rounded-full bg-accent/15 blur-[120px] lp-glow" />
+      <div className="pointer-events-none absolute left-1/2 top-0 h-[320px] w-[680px] -translate-x-1/2 rounded-full bg-accent/[0.08] blur-[120px] lp-glow" />
       <div className="relative mx-auto max-w-3xl px-5 py-16 text-center md:py-24">
         <span className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent-soft px-3 py-1.5 text-xs font-medium text-accent-ink">
           <Sparkles size={13} /> Ранний доступ · фаза тестирования
@@ -226,7 +226,7 @@ export function Waitlist() {
                 onClick={downloadIcs}
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-accent lp-btn-grad px-6 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press"
               >
-                <CalendarPlus size={15} /> Напомнить через 3 недели
+                <CalendarPlus size={15} /> Добавить в календарь, чтобы не забыть
               </button>
               <a
                 href={reminder.gcalUrl}
