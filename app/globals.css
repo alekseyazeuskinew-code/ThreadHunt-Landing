@@ -215,7 +215,9 @@
   --on-accent: #ffffff;
   --accent-ink: #a99bff; /* светлый фиолет — читаемо на тёмном фоне */
 }
-:root[data-theme='light'] .theme-violet {
+/* .theme-violet может стоять и на обёртке, и на самом <html> — поддерживаем оба. */
+:root[data-theme='light'] .theme-violet,
+:root[data-theme='light'].theme-violet {
   --accent-soft: rgba(109, 92, 246, 0.12);
   --accent-ink: #5b46d6; /* глубокий фиолет — читаемо на светлом фоне */
 }

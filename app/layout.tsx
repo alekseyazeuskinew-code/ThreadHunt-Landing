@@ -34,10 +34,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ru" className={`${space.variable} ${inter.variable} ${mono.variable}`}>
       <head>
-        {/* Применяем сохранённую тему до первой отрисовки — без мигания. */}
+        {/* Применяем тему до первой отрисовки — без мигания.
+            Вариант /d: фиолетовый акцент (.theme-violet) + светлая тема по умолчанию
+            (если пользователь явно не выбрал тёмную). */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{if(localStorage.getItem('th_theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();`,
+            __html: `(function(){try{var t=localStorage.getItem('th_theme');var p=location.pathname;var isD=(p==='/d'||p==='/d/'||p.indexOf('/d/')===0);if(isD)document.documentElement.classList.add('theme-violet');if(t==='light'||(isD&&t!=='dark'))document.documentElement.setAttribute('data-theme','light');}catch(e){}})();`,
           }}
         />
       </head>
