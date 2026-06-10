@@ -9,7 +9,7 @@ export const viewport: Viewport = {
 
 export default function HomePage() {
   return (
-    <div className="theme-violet">
+    <div className="theme-violet theme-ink">
       <Landing />
     </div>
   );

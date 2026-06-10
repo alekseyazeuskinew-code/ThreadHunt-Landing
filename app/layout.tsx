@@ -40,7 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             Варианты /b /c /e остаются тёмными с лаймом, чтобы /d-светлая не «протекала». */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var p=location.pathname;var el=document.documentElement;var t=null;try{t=localStorage.getItem('th_theme');}catch(e){}var isD=(p==='/d'||p==='/d/'||p.indexOf('/d/')===0);var isHome=(p==='/'||p==='');if(isD){el.classList.add('theme-violet');el.setAttribute('data-theme','light');}else if(isHome){el.classList.add('theme-violet');if(t==='dark'){el.removeAttribute('data-theme');}else{el.setAttribute('data-theme','light');}}else{el.removeAttribute('data-theme');}}catch(e){}})();`,
+            __html: `(function(){try{var p=location.pathname;var el=document.documentElement;var t=null;try{t=localStorage.getItem('th_theme');}catch(e){}var isD=(p==='/d'||p==='/d/'||p.indexOf('/d/')===0);var isHome=(p==='/'||p==='');if(isD){el.classList.add('theme-violet');el.setAttribute('data-theme','light');}else if(isHome){el.classList.add('theme-violet');el.classList.add('theme-ink');if(t==='dark'){el.removeAttribute('data-theme');}else{el.setAttribute('data-theme','light');}}else{el.removeAttribute('data-theme');}}catch(e){}})();`,
           }}
         />
       </head>
