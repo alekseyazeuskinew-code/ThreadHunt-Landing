@@ -40,6 +40,7 @@ import {
   Minus,
   Clock,
   Users,
+  Menu,
   Facebook,
   RefreshCw,
   type LucideIcon,
@@ -71,10 +72,7 @@ export const CTA_LABEL = PRELAUNCH ? 'В лист ожидания' : 'Нача�
 /* Пункты навигации (id секции → подсветка активной при скролле). */
 const NAV = [
   { id: 'examples', label: 'Примеры' },
-  { id: 'demo', label: 'Демо' },
-  { id: 'sandbox', label: 'Попробовать' },
   { id: 'how', label: 'Как работает' },
-  { id: 'features', label: 'Возможности' },
   { id: 'pricing', label: 'Тарифы' },
   { id: 'faq', label: 'Вопросы' },
 ];
@@ -1256,6 +1254,74 @@ export function SiteFooter() {
 }
 
 /* ── Лендинг ───────────────────────────────────────────────────────────── */
+/* ── Шапка сайта: компактная навигация (4 пункта) + выровненный правый кластер,
+   на мобайле — меню-бургер. CTA на телефоне дублируется прилипающей StickyCta. */
+function SiteHeader({ active }: { active: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <header className="sticky top-0 z-50 border-b border-line/70 bg-bg/80 backdrop-blur-xl">
+      <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-5">
+        <a href="#top" className="text-lg" onClick={() => setOpen(false)}><Wordmark /></a>
+
+        {/* десктоп-навигация */}
+        <nav className="ml-1 hidden items-center gap-7 text-sm lg:flex">
+          {NAV.map((n) => (
+            <a key={n.id} href={`#${n.id}`} className={cn('transition-colors hover:text-text', active === n.id ? 'text-accent-ink' : 'text-muted')}>
+              {n.label}
+            </a>
+          ))}
+        </nav>
+
+        {/* правый кластер — всё одной высоты (h-9), без переносов */}
+        <div className="ml-auto flex items-center gap-2">
+          <ThemeToggle />
+          {!PRELAUNCH && (
+            <a href={LOGIN} className="hidden h-9 items-center rounded-full px-4 text-sm text-muted transition-colors hover:text-text lg:inline-flex">Войти</a>
+          )}
+          <a href={CTA_HREF} className="lp-cta-pulse hidden h-9 items-center gap-1.5 whitespace-nowrap rounded-full bg-accent lp-btn-grad px-4 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press sm:inline-flex">
+            {CTA_LABEL} <ArrowRight size={15} />
+          </a>
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? 'Закрыть меню' : 'Открыть меню'}
+            aria-expanded={open}
+            className="inline-grid h-9 w-9 place-items-center rounded-full border border-line text-muted transition-colors hover:text-text lg:hidden"
+          >
+            {open ? <X size={18} /> : <Menu size={18} />}
+          </button>
+        </div>
+      </div>
+
+      {/* мобильное меню — плавное раскрытие через grid (lp-acc) */}
+      <div className={cn('lp-acc lg:hidden', open && 'open')}>
+        <div>
+          <nav className="flex flex-col gap-1 border-t border-line bg-bg/95 px-5 py-3 backdrop-blur-xl">
+            {NAV.map((n) => (
+              <a
+                key={n.id}
+                href={`#${n.id}`}
+                onClick={() => setOpen(false)}
+                className={cn('rounded-xl px-3 py-2.5 text-sm transition-colors hover:bg-panel-2', active === n.id ? 'text-accent-ink' : 'text-text')}
+              >
+                {n.label}
+              </a>
+            ))}
+            <div className="mt-2 flex items-center gap-2">
+              {!PRELAUNCH && (
+                <a href={LOGIN} onClick={() => setOpen(false)} className="flex h-11 flex-1 items-center justify-center rounded-full border border-line text-sm text-text">Войти</a>
+              )}
+              <a href={CTA_HREF} onClick={() => setOpen(false)} className="flex h-11 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-accent lp-btn-grad text-sm font-semibold text-on-accent">
+                {CTA_LABEL} <ArrowRight size={16} />
+              </a>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </header>
+  );
+}
+
 export function Landing() {
   const [active, setActive] = useState('');
   useEffect(() => {
@@ -1273,26 +1339,7 @@ export function Landing() {
       <ReadingProgress />
 
       {/* ── NAV ── */}
-      <header className="sticky top-0 z-50 border-b border-line/70 bg-bg/70 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-5">
-          <a href="#top" className="text-lg"><Wordmark /></a>
-          <nav className="ml-2 hidden items-center gap-6 text-sm lg:flex">
-            {NAV.map((n) => (
-              <a key={n.id} href={`#${n.id}`} className={cn('transition-colors hover:text-text', active === n.id ? 'text-accent-ink' : 'text-muted')}>
-                {n.label}
-              </a>
-            ))}
-          </nav>
-          <div className="ml-auto flex items-center gap-2">
-            {PRELAUNCH && <span className="hidden rounded-full border border-accent/40 bg-accent-soft px-2.5 py-1 text-[11px] font-medium text-accent-ink sm:inline">ранний доступ</span>}
-            <ThemeToggle />
-            {!PRELAUNCH && <a href={LOGIN} className="hidden rounded-full px-4 py-2 text-sm text-muted transition-colors hover:text-text sm:block">Войти</a>}
-            <a href={CTA_HREF} className="lp-cta-pulse inline-flex items-center gap-1.5 rounded-full bg-accent lp-btn-grad px-4 py-2 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press">
-              <span className="hidden sm:inline">{CTA_LABEL}</span><span className="sm:hidden">{PRELAUNCH ? 'Лист' : 'Старт'}</span> <ArrowRight size={15} />
-            </a>
-          </div>
-        </div>
-      </header>
+      <SiteHeader active={active} />
 
       {/* ── HERO (без изменений) ── */}
       <section id="top" className="relative overflow-hidden">
