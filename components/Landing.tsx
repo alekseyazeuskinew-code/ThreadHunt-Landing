@@ -191,42 +191,46 @@ export function KeywordMarquee() {
 /* ── Реальные ветки Threads: пост-приманка → отклик в комментах → авто-ответ ──
    Воссозданы как чистые брендовые карточки (без сырых скриншотов): ники
    анонимны, аватары стилизованы. Первая карточка проигрывает живой сценарий. */
+const AUTHOR = '@alex.targetolovich';
+const AUTHOR_GRAD = 'from-amber-200 via-orange-300 to-rose-400';
 type ThreadEx = {
-  handle: string; avatar: string; grad: string; time: string; views: string;
-  post: string; kw: string; likes: number; comments: number; reposts: number;
-  replyHandle: string; replyAvatar: string; comment: string; auto: string; role: string;
+  time: string; views: string; post: string; kw: string;
+  likes: number; comments: number; reposts: number;
+  replyHandle: string; replyGrad: string; comment: string; auto: string; role: string;
 };
 const THREADS: ThreadEx[] = [
   {
-    handle: '@mila.hires', avatar: 'МХ', grad: 'from-violet-400 to-fuchsia-500', time: '2 дн.', views: '3 тыс.',
-    post: 'Коллеги-монтажёры, ищу на Reels/Shorts. 5 роликов в неделю, $10–20 за каждый. Удалёнка, платим вовремя. Ставь «монтаж» в директ 🤝',
+    time: '2 дн.', views: '3 тыс.',
+    post: 'Коллеги-монтажёры, вы готовы или ещё спите? Ищу на Reels/Shorts, минимум год опыта. 5 видео в неделю, $10–20 за каждое. Удалёнка, вовремя платим. Ставь «монтаж» в директ 🤝',
     kw: 'монтаж', likes: 28, comments: 44, reposts: 3,
-    replyHandle: '@andrey.cuts', replyAvatar: 'АК', comment: 'монтаж',
-    auto: 'Спасибо за отклик! Напиши это кодовое слово нам в Директ — там пришлём бриф и следующие шаги.',
+    replyHandle: '@yulialopatnichenko', replyGrad: 'from-sky-200 via-indigo-300 to-violet-400', comment: 'Монтаж',
+    auto: 'Спасибо за отклик! Напиши, пожалуйста, это кодовое слово нам в Директ — там пришлём следующие шаги.',
     role: 'Видеомонтажёр',
   },
   {
-    handle: '@artdir.lab', avatar: 'АЛ', grad: 'from-indigo-400 to-violet-500', time: '5 дн.', views: '655',
-    post: 'Ищу 2 дизайнеров карточек и инфографики на постоянку 🎨 15–20 креативов в неделю, 5–7$ за слайд. Хочешь в команду — напиши «ДИЗАЙН» в Директ.',
+    time: '5 дн.', views: '621',
+    post: 'Отзовитесь!!! Нужны 2 дизайнера на постоянку 🎨 Карточки и инфографика. Стабильный объём 15–20 креативов в неделю, 5–7$ за слайд. Хочешь в команду — напиши «ДИЗАЙН» в Директ.',
     kw: 'ДИЗАЙН', likes: 6, comments: 10, reposts: 1,
-    replyHandle: '@olga.makes', replyAvatar: 'ОМ', comment: 'Буду рада сотрудничеству',
-    auto: 'В каждой ветке — кодовое слово «Дизайн». Отправь его в Директ, и бот проведёт тебя на следующий этап.',
+    replyHandle: '@olgaerema1', replyGrad: 'from-rose-200 via-pink-300 to-fuchsia-400', comment: 'Буду рада сотрудничеству',
+    auto: 'В каждой ветке написано отправить кодовое слово «Дизайн» в Директ — если не отправить, бот не проведёт на следующий этап.',
     role: 'Дизайнер',
   },
   {
-    handle: '@founder.day', avatar: 'ФД', grad: 'from-purple-400 to-violet-600', time: '1 нед.', views: '2,2 тыс.',
-    post: 'Найдись, бизнес-ассистент с насмотренностью и любовью к делу. Занятость 5/2, удалёнка. Пиши «Я ТУТ» в Директ 🤝',
+    time: '1 нед.', views: '2,2 тыс.',
+    post: 'Найди ассистента с шилом в попе. Бизнес-ассистент с хорошей насмотренностью: нейронки, эксель, навести порядок. Занятость 5/2. Пиши «Я ТУТ» в Директ 🤝',
     kw: 'Я ТУТ', likes: 21, comments: 27, reposts: 2,
-    replyHandle: '@dana.pro', replyAvatar: 'ДП', comment: 'Я ТУТ',
-    auto: 'Спасибо за отклик! Напиши это кодовое слово нам в Директ — там пришлём следующие шаги.',
+    replyHandle: '@dakypriyanov', replyGrad: 'from-emerald-200 via-teal-300 to-cyan-400', comment: 'Добрый день. Я ТУТ. Подскажите, как можно с Вами связаться?',
+    auto: 'Спасибо за отклик! Напиши, пожалуйста, это кодовое слово нам в Директ — там пришлём следующие шаги.',
     role: 'Бизнес-ассистент',
   },
 ];
 
-function ThreadAvatar({ initials, grad, size = 'h-9 w-9' }: { initials: string; grad: string; size?: string }) {
+/* Заблюренный аватар: реальные фото не используем — под blur мягкая «фото»-заглушка,
+   личность не считывается, но карточка выглядит как настоящая переписка. */
+function BlurAvatar({ grad, size = 'h-9 w-9' }: { grad: string; size?: string }) {
   return (
-    <div className={cn('grid shrink-0 place-items-center rounded-full bg-gradient-to-br text-[11px] font-semibold text-white', grad, size)}>
-      {initials}
+    <div className={cn('relative shrink-0 overflow-hidden rounded-full border border-line', size)}>
+      <div className={cn('absolute inset-0 scale-150 bg-gradient-to-br blur-[5px]', grad)} />
     </div>
   );
 }
@@ -269,10 +273,10 @@ function LiveThread({ t, animated = false }: { t: ThreadEx; animated?: boolean }
       <div className="flex flex-1 flex-col p-4">
         {/* пост-приманка */}
         <div className="flex items-start gap-3">
-          <ThreadAvatar initials={t.avatar} grad={t.grad} />
+          <BlurAvatar grad={AUTHOR_GRAD} />
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 text-sm">
-              <span className="font-semibold">{t.handle}</span>
+              <span className="font-semibold">{AUTHOR}</span>
               <span className="text-muted">· {t.time}</span>
             </div>
             <p className="mt-1 text-[13px] leading-relaxed text-text">{highlight(t.post, t.kw)}</p>
@@ -285,7 +289,7 @@ function LiveThread({ t, animated = false }: { t: ThreadEx; animated?: boolean }
         {/* отклик кандидата */}
         {step >= 1 && (
           <div className="lp-rise flex items-start gap-2.5">
-            <ThreadAvatar initials={t.replyAvatar} grad="from-slate-300 to-slate-400" size="h-7 w-7" />
+            <BlurAvatar grad={t.replyGrad} size="h-7 w-7" />
             <div className="min-w-0">
               <div className="text-xs"><span className="font-semibold">{t.replyHandle}</span> <span className="text-muted">· {t.time}</span></div>
               <div className="mt-1 inline-block rounded-2xl rounded-tl-sm bg-panel-2 px-3 py-1.5 text-[13px]">{highlight(t.comment, t.kw)}</div>
@@ -305,10 +309,10 @@ function LiveThread({ t, animated = false }: { t: ThreadEx; animated?: boolean }
         {/* авто-ответ автора (Threadhunt) */}
         {step >= 3 && (
           <div className="lp-rise mt-3 flex items-start gap-2.5">
-            <ThreadAvatar initials={t.avatar} grad={t.grad} size="h-7 w-7" />
+            <BlurAvatar grad={AUTHOR_GRAD} size="h-7 w-7" />
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 text-xs">
-                <span className="font-semibold">{t.handle}</span>
+                <span className="font-semibold">{AUTHOR}</span>
                 <span className="rounded bg-accent-soft px-1.5 py-0.5 text-[10px] font-medium text-accent-ink">Автор</span>
               </div>
               <div className="mt-1 rounded-2xl rounded-tl-sm bg-accent-soft px-3 py-2 text-[13px] text-text">{t.auto}</div>
@@ -346,7 +350,7 @@ export function RealThreads() {
         </Reveal>
         <div className="mt-10 grid gap-5 md:grid-cols-3">
           {THREADS.map((t, i) => (
-            <Reveal key={t.handle} delay={i * 120} className="h-full">
+            <Reveal key={t.kw} delay={i * 120} className="h-full">
               <LiveThread t={t} animated={i === 0} />
             </Reveal>
           ))}
