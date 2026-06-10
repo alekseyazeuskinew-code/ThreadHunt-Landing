@@ -291,3 +291,11 @@
 :root[data-theme='light'].theme-ink { --accent-ink: #2d2a3a; }  /* светлая (по умолчанию) — графит */
 /* ключевое слово в заголовке остаётся настоящим ярким фиолетом */
 .theme-ink .lp-gradient-text { color: var(--accent); }
+
+/* ── Появление модалок/карточек успеха (поп-ап, экран после заявки) ── */
+@keyframes anim-pop {
+  from { opacity: 0; transform: translateY(8px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+.anim-pop { animation: anim-pop 0.32s var(--lp-ease) both; }
+@media (prefers-reduced-motion: reduce) { .anim-pop { animation: none; } }

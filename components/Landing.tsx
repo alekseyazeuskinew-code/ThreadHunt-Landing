@@ -49,6 +49,8 @@ import { Wordmark } from '@/components/Wordmark';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { DemoConsole } from '@/components/landing/DemoConsole';
 import { StickyCta } from '@/components/StickyCta';
+import { LiveActivity } from '@/components/LiveActivity';
+import { ExitIntent } from '@/components/ExitIntent';
 import { ReadingProgress } from '@/components/ReadingProgress';
 import { Reveal, Counter, TypingText, AnimatedBars, TypeOnce } from '@/components/landing/primitives';
 import { cn } from '@/lib/cn';
@@ -1489,6 +1491,10 @@ export function Landing() {
 
       {/* ── ПРИЛИПАЮЩИЙ CTA (мобайл) ── */}
       <StickyCta href={CTA_HREF} label={CTA_LABEL} />
+
+      {/* ── РЫЧАГИ КОНВЕРСИИ: живой соц-пруф + exit-intent поп-ап ── */}
+      {PRELAUNCH && <LiveActivity />}
+      {PRELAUNCH && <ExitIntent />}
     </div>
   );
 }
