@@ -22,6 +22,8 @@ import {
   Rocket,
   ChevronRight,
   ChevronDown,
+  ChevronLeft,
+  Heart,
   Link2,
   Wand2,
   TrendingUp,
@@ -68,6 +70,7 @@ export const CTA_LABEL = PRELAUNCH ? 'В лист ожидания' : 'Нача�
 
 /* Пункты навигации (id секции → подсветка активной при скролле). */
 const NAV = [
+  { id: 'examples', label: 'Примеры' },
   { id: 'demo', label: 'Демо' },
   { id: 'sandbox', label: 'Попробовать' },
   { id: 'how', label: 'Как работает' },
@@ -182,6 +185,174 @@ export function KeywordMarquee() {
         ))}
       </div>
     </div>
+  );
+}
+
+/* ── Реальные ветки Threads: пост-приманка → отклик в комментах → авто-ответ ──
+   Воссозданы как чистые брендовые карточки (без сырых скриншотов): ники
+   анонимны, аватары стилизованы. Первая карточка проигрывает живой сценарий. */
+type ThreadEx = {
+  handle: string; avatar: string; grad: string; time: string; views: string;
+  post: string; kw: string; likes: number; comments: number; reposts: number;
+  replyHandle: string; replyAvatar: string; comment: string; auto: string; role: string;
+};
+const THREADS: ThreadEx[] = [
+  {
+    handle: '@mila.hires', avatar: 'МХ', grad: 'from-violet-400 to-fuchsia-500', time: '2 дн.', views: '3 тыс.',
+    post: 'Коллеги-монтажёры, ищу на Reels/Shorts. 5 роликов в неделю, $10–20 за каждый. Удалёнка, платим вовремя. Ставь «монтаж» в директ 🤝',
+    kw: 'монтаж', likes: 28, comments: 44, reposts: 3,
+    replyHandle: '@andrey.cuts', replyAvatar: 'АК', comment: 'монтаж',
+    auto: 'Спасибо за отклик! Напиши это кодовое слово нам в Директ — там пришлём бриф и следующие шаги.',
+    role: 'Видеомонтажёр',
+  },
+  {
+    handle: '@artdir.lab', avatar: 'АЛ', grad: 'from-indigo-400 to-violet-500', time: '5 дн.', views: '655',
+    post: 'Ищу 2 дизайнеров карточек и инфографики на постоянку 🎨 15–20 креативов в неделю, 5–7$ за слайд. Хочешь в команду — напиши «ДИЗАЙН» в Директ.',
+    kw: 'ДИЗАЙН', likes: 6, comments: 10, reposts: 1,
+    replyHandle: '@olga.makes', replyAvatar: 'ОМ', comment: 'Буду рада сотрудничеству',
+    auto: 'В каждой ветке — кодовое слово «Дизайн». Отправь его в Директ, и бот проведёт тебя на следующий этап.',
+    role: 'Дизайнер',
+  },
+  {
+    handle: '@founder.day', avatar: 'ФД', grad: 'from-purple-400 to-violet-600', time: '1 нед.', views: '2,2 тыс.',
+    post: 'Найдись, бизнес-ассистент с насмотренностью и любовью к делу. Занятость 5/2, удалёнка. Пиши «Я ТУТ» в Директ 🤝',
+    kw: 'Я ТУТ', likes: 21, comments: 27, reposts: 2,
+    replyHandle: '@dana.pro', replyAvatar: 'ДП', comment: 'Я ТУТ',
+    auto: 'Спасибо за отклик! Напиши это кодовое слово нам в Директ — там пришлём следующие шаги.',
+    role: 'Бизнес-ассистент',
+  },
+];
+
+function ThreadAvatar({ initials, grad, size = 'h-9 w-9' }: { initials: string; grad: string; size?: string }) {
+  return (
+    <div className={cn('grid shrink-0 place-items-center rounded-full bg-gradient-to-br text-[11px] font-semibold text-white', grad, size)}>
+      {initials}
+    </div>
+  );
+}
+
+function EngageRow({ likes, comments, reposts }: { likes: number; comments: number; reposts: number }) {
+  return (
+    <div className="mt-3 flex items-center gap-5 text-muted">
+      <span className="inline-flex items-center gap-1.5 text-sm"><Heart size={16} className="fill-danger text-danger" /> {likes}</span>
+      <span className="inline-flex items-center gap-1.5 text-sm"><MessageSquare size={16} /> {comments}</span>
+      <span className="inline-flex items-center gap-1.5 text-sm"><RefreshCw size={15} /> {reposts}</span>
+      <Send size={15} className="ml-auto" />
+    </div>
+  );
+}
+
+/* Одна ветка. animated=true → пошаговый цикл (отклик → печатает → авто-ответ → лид). */
+function LiveThread({ t, animated = false }: { t: ThreadEx; animated?: boolean }) {
+  const [step, setStep] = useState(animated ? 0 : 4);
+  useEffect(() => {
+    if (!animated) return;
+    const delays = [1500, 1200, 1300, 2200, 2600];
+    const id = setTimeout(() => setStep((s) => (s + 1) % 5), delays[step]);
+    return () => clearTimeout(id);
+  }, [animated, step]);
+
+  return (
+    <div className="flex h-full min-h-[460px] flex-col overflow-hidden rounded-[26px] border border-line bg-panel shadow-xl">
+      {/* шапка ветки */}
+      <div className="flex items-center gap-2 border-b border-line px-4 py-3 text-muted">
+        <ChevronLeft size={18} />
+        <div className="mx-auto text-center">
+          <div className="text-sm font-semibold text-text">Ветка</div>
+          <div className="text-[11px]">{t.views} просмотров</div>
+        </div>
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-2 py-0.5 text-[10px] font-medium text-accent-ink">
+          <span className="h-1.5 w-1.5 rounded-full bg-success lp-ring" /> авто
+        </span>
+      </div>
+
+      <div className="flex flex-1 flex-col p-4">
+        {/* пост-приманка */}
+        <div className="flex items-start gap-3">
+          <ThreadAvatar initials={t.avatar} grad={t.grad} />
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5 text-sm">
+              <span className="font-semibold">{t.handle}</span>
+              <span className="text-muted">· {t.time}</span>
+            </div>
+            <p className="mt-1 text-[13px] leading-relaxed text-text">{highlight(t.post, t.kw)}</p>
+          </div>
+        </div>
+        <EngageRow likes={t.likes} comments={t.comments} reposts={t.reposts} />
+
+        <div className="my-3 h-px bg-line" />
+
+        {/* отклик кандидата */}
+        {step >= 1 && (
+          <div className="lp-rise flex items-start gap-2.5">
+            <ThreadAvatar initials={t.replyAvatar} grad="from-slate-300 to-slate-400" size="h-7 w-7" />
+            <div className="min-w-0">
+              <div className="text-xs"><span className="font-semibold">{t.replyHandle}</span> <span className="text-muted">· {t.time}</span></div>
+              <div className="mt-1 inline-block rounded-2xl rounded-tl-sm bg-panel-2 px-3 py-1.5 text-[13px]">{highlight(t.comment, t.kw)}</div>
+            </div>
+          </div>
+        )}
+
+        {/* автор печатает */}
+        {animated && step === 2 && (
+          <div className="lp-rise mt-3 ml-9 flex w-fit items-center gap-1.5 rounded-2xl bg-accent-soft px-3 py-2.5">
+            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-accent-ink [animation-delay:-0.2s]" />
+            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-accent-ink [animation-delay:-0.1s]" />
+            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-accent-ink" />
+          </div>
+        )}
+
+        {/* авто-ответ автора (Threadhunt) */}
+        {step >= 3 && (
+          <div className="lp-rise mt-3 flex items-start gap-2.5">
+            <ThreadAvatar initials={t.avatar} grad={t.grad} size="h-7 w-7" />
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 text-xs">
+                <span className="font-semibold">{t.handle}</span>
+                <span className="rounded bg-accent-soft px-1.5 py-0.5 text-[10px] font-medium text-accent-ink">Автор</span>
+              </div>
+              <div className="mt-1 rounded-2xl rounded-tl-sm bg-accent-soft px-3 py-2 text-[13px] text-text">{t.auto}</div>
+              <div className="mt-1.5 inline-flex items-center gap-1 font-mono text-[10px] text-accent-ink"><Zap size={11} /> ответил Threadhunt</div>
+            </div>
+          </div>
+        )}
+
+        {/* лид упал в CRM */}
+        {step >= 4 && (
+          <div className="lp-rise mt-auto flex items-center gap-2.5 rounded-xl border border-line bg-bg p-2.5">
+            <div className="grid h-7 w-7 place-items-center rounded-lg bg-accent-soft text-accent-ink"><KanbanSquare size={14} /></div>
+            <div className="min-w-0 flex-1">
+              <div className="truncate text-xs font-medium">Новый лид · {t.role}</div>
+              <div className="font-mono text-[10px] text-muted">воронка: NEW</div>
+            </div>
+            <Check size={14} className="text-success" />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export function RealThreads() {
+  return (
+    <section id="examples" className="border-t border-line">
+      <div className="mx-auto max-w-6xl px-5 py-20 md:py-28">
+        <Reveal>
+          <div className="max-w-2xl">
+            <div className="font-mono text-xs uppercase tracking-widest text-accent-ink">так это выглядит в ленте</div>
+            <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">Реальные ветки, реальные отклики</h2>
+            <p className="mt-3 text-muted">Ставишь пост-приманку с кодовым словом — люди откликаются прямо в комментариях, а Threadhunt сам отвечает и переводит их в директ. Вот как это происходит вживую.</p>
+          </div>
+        </Reveal>
+        <div className="mt-10 grid gap-5 md:grid-cols-3">
+          {THREADS.map((t, i) => (
+            <Reveal key={t.handle} delay={i * 120} className="h-full">
+              <LiveThread t={t} animated={i === 0} />
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -1198,6 +1369,9 @@ export function Landing() {
 
       {/* ── ВИДЕО ── */}
       <VideoShowcase />
+
+      {/* ── РЕАЛЬНЫЕ ВЕТКИ THREADS ── */}
+      <RealThreads />
 
       {/* ── ДЕМО КАБИНЕТА ── */}
       <section id="demo" className="border-t border-line bg-panel/30">

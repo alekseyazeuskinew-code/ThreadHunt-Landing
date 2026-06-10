@@ -35,12 +35,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ru" className={`${space.variable} ${inter.variable} ${mono.variable}`}>
       <head>
         {/* Тема строго по маршруту, до первой отрисовки (без мигания):
-            /d — светлая + фиолетовый акцент; ВСЕ остальные страницы — тёмные.
-            Сохранённый в браузере выбор намеренно игнорируем, чтобы светлая
-            тема варианта /d не «протекала» на остальные страницы. */}
+            / (главная, вариант A) и /d — фиолетовый акцент + светлая тема по умолчанию.
+            На главной сохранённый выбор уважаем (есть переключатель), на /d — форсим светлую.
+            Варианты /b /c /e остаются тёмными с лаймом, чтобы /d-светлая не «протекала». */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var p=location.pathname;var isD=(p==='/d'||p==='/d/'||p.indexOf('/d/')===0);var el=document.documentElement;if(isD){el.classList.add('theme-violet');el.setAttribute('data-theme','light');}else{el.removeAttribute('data-theme');}}catch(e){}})();`,
+            __html: `(function(){try{var p=location.pathname;var el=document.documentElement;var t=null;try{t=localStorage.getItem('th_theme');}catch(e){}var isD=(p==='/d'||p==='/d/'||p.indexOf('/d/')===0);var isHome=(p==='/'||p==='');if(isD){el.classList.add('theme-violet');el.setAttribute('data-theme','light');}else if(isHome){el.classList.add('theme-violet');if(t==='dark'){el.removeAttribute('data-theme');}else{el.setAttribute('data-theme','light');}}else{el.removeAttribute('data-theme');}}catch(e){}})();`,
           }}
         />
       </head>

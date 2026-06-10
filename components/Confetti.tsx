@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 
-const COLORS = ['#C6F24E', '#d4f56a', '#a9d63f', '#ededf2'];
+const COLORS = ['#6d5cf6', '#a99bff', '#8b7cff', '#ededf2'];
 
 // Лёгкое CSS-конфетти. Рендерится один раз при появлении (на экране успеха).
 export function Confetti({ count = 48 }: { count?: number }) {
