@@ -988,7 +988,7 @@ function FirstMover() {
 /* ── Реферальная программа ─────────────────────────────────────────────── */
 export function Referral() {
   const [n, setN] = useState(8);
-  const AVG = 1490; // средний чек Pro, ₽
+  const AVG = 19; // средний чек Pro, $ (USD)
   const RATE = 0.25; // 25% пожизненно
   const monthly = Math.round(n * AVG * RATE);
   const yearly = monthly * 12;
@@ -1040,11 +1040,11 @@ export function Referral() {
               <div className="text-sm font-medium text-muted">Сколько ты заработаешь</div>
               <div className="mt-5 flex items-end justify-between gap-4">
                 <div>
-                  <div className="font-display text-4xl font-bold text-accent-ink md:text-5xl">{monthly.toLocaleString('ru-RU')} ₽</div>
+                  <div className="font-display text-4xl font-bold text-accent-ink md:text-5xl">{`$${monthly.toLocaleString('en-US')}`}</div>
                   <div className="mt-1 text-xs text-muted">в месяц</div>
                 </div>
                 <div className="text-right">
-                  <div className="font-display text-xl font-semibold">{yearly.toLocaleString('ru-RU')} ₽</div>
+                  <div className="font-display text-xl font-semibold">{`$${yearly.toLocaleString('en-US')}`}</div>
                   <div className="mt-1 text-xs text-muted">в год</div>
                 </div>
               </div>
@@ -1056,7 +1056,7 @@ export function Referral() {
                 <input type="range" min={1} max={50} value={n} onChange={(e) => setN(Number(e.target.value))} className="w-full accent-accent" />
                 <div className="mt-1 flex justify-between font-mono text-[10px] text-muted"><span>1</span><span>50</span></div>
               </div>
-              <p className="mt-5 text-[11px] leading-relaxed text-muted">Оценка при среднем чеке Pro (1 490 ₽) и ставке 25% пожизненно. Выплаты — с фактических платежей рефералов.</p>
+              <p className="mt-5 text-[11px] leading-relaxed text-muted">Оценка при среднем чеке Pro ($19/мес) и ставке 25% пожизненно. Выплаты — с фактических платежей рефералов.</p>
               <a href={CTA_HREF} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent lp-btn-grad px-5 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press">
                 Получить реф-ссылку <ArrowRight size={15} />
               </a>
