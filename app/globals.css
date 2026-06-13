@@ -301,13 +301,17 @@
 @media (prefers-reduced-motion: reduce) { .anim-pop { animation: none; } }
 
 /* ── Фоновое видео hero ── */
-/* По умолчанию (мобайл / reduced-motion) — статичный постер, видео скрыто.
-   На десктопе с разрешённой анимацией — крутим видео, постер прячем. */
-.hero-poster { display: block; }
-.hero-video { display: none; }
-@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
-  .hero-video { display: block; }
-  .hero-poster { display: none; }
+/* Видео крутится на всех экранах (включая мобайл: muted+playsinline → автоплей ок).
+   Статичный постер — только фолбэк при prefers-reduced-motion. */
+.hero-poster { display: none; }
+.hero-video { display: block; }
+/* На узких экранах сдвигаем кадр вправо — там основное движение (нити/свечение). */
+@media (max-width: 767px) {
+  .hero-video { object-position: 72% center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-video { display: none; }
+  .hero-poster { display: block; }
 }
 /* Скрим: слева плотный фон (под заголовок/CTA), вправо прозрачнее; снизу — уход в фон. */
 .hero-scrim {
