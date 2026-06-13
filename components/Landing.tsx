@@ -1345,12 +1345,27 @@ export function Landing() {
 
       {/* ── HERO (без изменений) ── */}
       <section id="top" className="relative overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 lp-grid opacity-40" />
-        <div className="pointer-events-none absolute -top-32 left-1/2 h-[420px] w-[820px] -translate-x-1/2 rounded-full bg-accent/[0.07] blur-[130px] lp-glow" />
-        <div className="pointer-events-none absolute -left-24 top-40 h-72 w-72 rounded-full bg-accent/[0.035] blur-[100px] lp-float" />
-        <div className="pointer-events-none absolute -right-24 top-64 h-72 w-72 rounded-full bg-accent/[0.035] blur-[100px] lp-float-slow" />
+        {/* Фоновое AI-видео (Higgsfield): десктоп + разрешённая анимация; иначе статичный постер.
+            Скрим слева держит читабельность заголовка и CTA. */}
+        <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+          <video
+            className="hero-video h-full w-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            poster="/hero-bg-poster.jpg"
+          >
+            <source src="/hero-bg.mp4" type="video/mp4" />
+          </video>
+          <div
+            className="hero-poster absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: 'url(/hero-bg-poster.jpg)' }}
+          />
+          <div className="hero-scrim absolute inset-0" />
+        </div>
 
-        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 pb-16 pt-16 md:grid-cols-2 md:pb-24 md:pt-24">
+        <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-12 px-5 pb-16 pt-16 md:grid-cols-2 md:pb-24 md:pt-24">
           <div>
             <Reveal>
               <span className="inline-flex items-center gap-2 rounded-full border border-line bg-panel/60 px-3 py-1.5 text-xs text-muted">
@@ -1405,7 +1420,7 @@ export function Landing() {
           </Reveal>
         </div>
 
-        <div className="relative mx-auto max-w-6xl px-5 pb-12">
+        <div className="relative z-10 mx-auto max-w-6xl px-5 pb-12">
           <div className="mb-3 text-center font-mono text-[11px] uppercase tracking-widest text-muted">ловит по кодовым словам</div>
           <KeywordMarquee />
         </div>
