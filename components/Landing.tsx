@@ -1381,17 +1381,19 @@ function OnboardingForge() {
           {/* ПРЕВЬЮ ОНБОРДИНГА — полноценный брендированный экран кандидата */}
           <Reveal delay={120}>
             <div key={gen} className="lp-rise overflow-hidden rounded-2xl border border-line bg-bg shadow-xl">
-              {/* ── Обложка с брендингом (плейсхолдер: при добавлении /onb-cover.jpg и /onb-logo.png заменю на реальные) ── */}
-              <div className="relative h-28 overflow-hidden bg-gradient-to-br from-[#6C5CFF] via-[#5b46d6] to-[#2d2a3a]">
-                <div className="pointer-events-none absolute inset-0 opacity-30 [background-image:radial-gradient(circle_at_80%_20%,#fff,transparent_45%)]" />
-                <div className="absolute inset-x-0 bottom-0 flex items-end gap-3 p-4">
-                  <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/95 font-display text-sm font-bold text-[#5b46d6] shadow">TH</div>
-                  <div className="min-w-0 pb-0.5 text-white">
-                    <div className="truncate text-sm font-semibold">ThreadHunt · команда найма</div>
-                    <div className="text-[11px] text-white/80">Онбординг кандидата · {r.label}</div>
-                  </div>
-                  <span className="ml-auto rounded-full bg-white/15 px-2 py-0.5 font-mono text-[10px] text-white backdrop-blur">{lang}</span>
+              {/* ── Брендовая шапка TargetPoint — настоящий логотип (public/onb-logo.png),
+                  «леттерхед» как в их реальной онбординг-форме ── */}
+              <div className="border-b border-line bg-white px-5 pt-4 pb-3">
+                <div className="flex items-start justify-between gap-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/onb-logo.png" alt="TargetPoint" className="h-11 w-auto" />
+                  <span className="rounded-full border border-[#16161c]/15 px-2 py-0.5 font-mono text-[10px] text-[#16161c]">{lang}</span>
                 </div>
+                <div className="mt-3 flex items-center gap-3">
+                  <div className="h-px flex-1 bg-[#16161c]/80" />
+                  <span className="shrink-0 text-[10px] font-medium uppercase tracking-wider text-[#16161c]">We’re hiring at TargetPoint</span>
+                </div>
+                <div className="mt-2 text-[11px] text-muted">Онбординг кандидата · {r.label}</div>
               </div>
 
               {/* ── Прогресс + персональная ссылка ── */}
