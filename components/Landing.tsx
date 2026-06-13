@@ -1259,45 +1259,54 @@ export function SiteFooter() {
 /* ── Онбординг-конструктор: показываем вживую, как ИИ собирает онбординг
    с кастомизацией. Слева интерактивный конструктор, справа — превью глазами
    кандидата, которое пересобирается на лету. ─────────────────────────────── */
-type OnbQ = { q: string; type: 'choice' | 'multi' | 'text' | 'scale'; opts?: string[] };
-const ONB_ROLES: { key: string; label: string; task: string; crit: string[]; deadline: string; questions: OnbQ[] }[] = [
+type Loc = { ru: string; en: string };
+type OnbQ = { q: Loc; type: 'choice' | 'multi' | 'text' | 'scale'; opts?: { ru: string[]; en: string[] } };
+const onbL = (o: Loc, en: boolean) => (en ? o.en : o.ru);
+
+const ONB_ROLES: { key: string; label: Loc; task: Loc; crit: { ru: string[]; en: string[] }; days: number; questions: OnbQ[] }[] = [
   {
-    key: 'video', label: 'Видеомонтажёр',
-    task: 'Смонтируй Reels 30 сек из присланного материала: динамичная нарезка, субтитры, трендовый звук.',
-    crit: ['ритм', 'субтитры', 'чистота склейки'], deadline: '2 дня',
+    key: 'video',
+    label: { ru: 'Видеомонтажёр', en: 'Video editor' },
+    task: { ru: 'Смонтируй Reels 30 сек из присланного материала: динамичная нарезка, субтитры, трендовый звук.', en: 'Edit a 30-sec Reel from the footage we send: punchy cuts, captions, trending audio.' },
+    crit: { ru: ['ритм', 'субтитры', 'чистота склейки'], en: ['rhythm', 'captions', 'clean cuts'] },
+    days: 2,
     questions: [
-      { q: 'Сколько лет профессионально монтируешь?', type: 'choice', opts: ['< 1 года', '1–3 года', '3–5 лет', '5+ лет'] },
-      { q: 'В каких программах работаешь?', type: 'multi', opts: ['Premiere Pro', 'After Effects', 'DaVinci', 'CapCut'] },
-      { q: 'Ссылка на шоурил / портфолио', type: 'text' },
-      { q: 'Сколько Reels в неделю потянешь?', type: 'choice', opts: ['до 5', '5–10', '10–20', '20+'] },
-      { q: 'Оцени свой уровень моушн-графики', type: 'scale' },
-      { q: 'Готов сдать тестовое за 2 дня?', type: 'choice', opts: ['Да', 'Нужно больше времени'] },
+      { q: { ru: 'Сколько лет профессионально монтируешь?', en: 'Years editing professionally?' }, type: 'choice', opts: { ru: ['< 1 года', '1–3 года', '3–5 лет', '5+ лет'], en: ['< 1 yr', '1–3 yrs', '3–5 yrs', '5+ yrs'] } },
+      { q: { ru: 'В каких программах работаешь?', en: 'Which tools do you use?' }, type: 'multi', opts: { ru: ['Premiere Pro', 'After Effects', 'DaVinci', 'CapCut'], en: ['Premiere Pro', 'After Effects', 'DaVinci', 'CapCut'] } },
+      { q: { ru: 'Ссылка на шоурил / портфолио', en: 'Showreel / portfolio link' }, type: 'text' },
+      { q: { ru: 'Сколько Reels в неделю потянешь?', en: 'Reels per week you can handle?' }, type: 'choice', opts: { ru: ['до 5', '5–10', '10–20', '20+'], en: ['up to 5', '5–10', '10–20', '20+'] } },
+      { q: { ru: 'Оцени свой уровень моушн-графики', en: 'Rate your motion-graphics level' }, type: 'scale' },
+      { q: { ru: 'Готов сдать тестовое за 2 дня?', en: 'Ready to submit the test in 2 days?' }, type: 'choice', opts: { ru: ['Да', 'Нужно больше времени'], en: ['Yes', 'Need more time'] } },
     ],
   },
   {
-    key: 'target', label: 'Таргетолог',
-    task: 'Собери тестовую Meta-кампанию: 2 аудитории, 3 креатива, гипотеза и KPI на неделю.',
-    crit: ['логика аудиторий', 'оффер', 'прогноз CPL'], deadline: '1 день',
+    key: 'target',
+    label: { ru: 'Таргетолог', en: 'Performance marketer' },
+    task: { ru: 'Собери тестовую Meta-кампанию: 2 аудитории, 3 креатива, гипотеза и KPI на неделю.', en: 'Draft a test Meta campaign: 2 audiences, 3 creatives, a hypothesis and weekly KPIs.' },
+    crit: { ru: ['логика аудиторий', 'оффер', 'прогноз CPL'], en: ['audience logic', 'offer', 'CPL forecast'] },
+    days: 1,
     questions: [
-      { q: 'С какими нишами работал(а)?', type: 'multi', opts: ['E-com', 'Инфобиз', 'Услуги', 'Apps'] },
-      { q: 'Средний рекламный бюджет в месяц?', type: 'choice', opts: ['< $1k', '$1–5k', '$5–20k', '$20k+'] },
-      { q: 'Платформы, где ведёшь трафик', type: 'multi', opts: ['Meta', 'Google', 'TikTok', 'Telegram'] },
-      { q: 'Лучший достигнутый CPL и в какой нише', type: 'text' },
-      { q: 'Насколько уверенно читаешь аналитику?', type: 'scale' },
-      { q: 'Готов(а) к недельному тесту с KPI?', type: 'choice', opts: ['Да', 'Обсудим условия'] },
+      { q: { ru: 'С какими нишами работал(а)?', en: 'Which niches have you run?' }, type: 'multi', opts: { ru: ['E-com', 'Инфобиз', 'Услуги', 'Apps'], en: ['E-com', 'Info-products', 'Services', 'Apps'] } },
+      { q: { ru: 'Средний рекламный бюджет в месяц?', en: 'Average monthly ad budget?' }, type: 'choice', opts: { ru: ['< $1k', '$1–5k', '$5–20k', '$20k+'], en: ['< $1k', '$1–5k', '$5–20k', '$20k+'] } },
+      { q: { ru: 'Платформы, где ведёшь трафик', en: 'Platforms you run traffic on' }, type: 'multi', opts: { ru: ['Meta', 'Google', 'TikTok', 'Telegram'], en: ['Meta', 'Google', 'TikTok', 'Telegram'] } },
+      { q: { ru: 'Лучший достигнутый CPL и в какой нише', en: 'Best CPL you achieved and in which niche' }, type: 'text' },
+      { q: { ru: 'Насколько уверенно читаешь аналитику?', en: 'How confident are you with analytics?' }, type: 'scale' },
+      { q: { ru: 'Готов(а) к недельному тесту с KPI?', en: 'Up for a one-week KPI trial?' }, type: 'choice', opts: { ru: ['Да', 'Обсудим условия'], en: ['Yes', 'Let’s discuss terms'] } },
     ],
   },
   {
-    key: 'design', label: 'Дизайнер',
-    task: 'Сделай 3 карточки для карусели Threads по брендбуку: обложка и 2 инфо-слайда.',
-    crit: ['композиция', 'типографика', 'гайдлайны'], deadline: '2 дня',
+    key: 'design',
+    label: { ru: 'Дизайнер', en: 'Designer' },
+    task: { ru: 'Сделай 3 карточки для карусели Threads по брендбуку: обложка и 2 инфо-слайда.', en: 'Make 3 Threads carousel cards per the brand book: a cover and 2 info slides.' },
+    crit: { ru: ['композиция', 'типографика', 'гайдлайны'], en: ['composition', 'typography', 'guidelines'] },
+    days: 2,
     questions: [
-      { q: 'Основное направление?', type: 'choice', opts: ['Соцсети', 'Брендинг', 'UI/UX', 'Иллюстрация'] },
-      { q: 'Инструменты', type: 'multi', opts: ['Figma', 'Photoshop', 'Illustrator', 'Blender'] },
-      { q: 'Ссылка на Behance / портфолио', type: 'text' },
-      { q: 'Сколько креативов в неделю комфортно?', type: 'choice', opts: ['до 10', '10–20', '20–40', '40+'] },
-      { q: 'Насколько строго следуешь брендбуку?', type: 'scale' },
-      { q: 'Готов(а) к тестовому за 2 дня?', type: 'choice', opts: ['Да', 'Нужно больше времени'] },
+      { q: { ru: 'Основное направление?', en: 'Main focus?' }, type: 'choice', opts: { ru: ['Соцсети', 'Брендинг', 'UI/UX', 'Иллюстрация'], en: ['Social', 'Branding', 'UI/UX', 'Illustration'] } },
+      { q: { ru: 'Инструменты', en: 'Tools' }, type: 'multi', opts: { ru: ['Figma', 'Photoshop', 'Illustrator', 'Blender'], en: ['Figma', 'Photoshop', 'Illustrator', 'Blender'] } },
+      { q: { ru: 'Ссылка на Behance / портфолио', en: 'Behance / portfolio link' }, type: 'text' },
+      { q: { ru: 'Сколько креативов в неделю комфортно?', en: 'Creatives per week you’re comfortable with?' }, type: 'choice', opts: { ru: ['до 10', '10–20', '20–40', '40+'], en: ['up to 10', '10–20', '20–40', '40+'] } },
+      { q: { ru: 'Насколько строго следуешь брендбуку?', en: 'How strictly do you follow a brand book?' }, type: 'scale' },
+      { q: { ru: 'Готов(а) к тестовому за 2 дня?', en: 'Ready for a 2-day test task?' }, type: 'choice', opts: { ru: ['Да', 'Нужно больше времени'], en: ['Yes', 'Need more time'] } },
     ],
   },
 ];
@@ -1308,15 +1317,62 @@ const ONB_BLOCKS: { key: string; label: string; icon: LucideIcon }[] = [
   { key: 'nda', label: 'NDA', icon: ShieldCheck },
   { key: 'survey', label: 'Короткий опрос', icon: MessageSquare },
 ];
-const ONB_LIFECYCLE = ['Сгенерирован', 'Ссылка отправлена', 'Кандидат открыл', 'Сдал работу', 'Проверка', 'Принят'];
+const ONB_T = {
+  ru: {
+    role: 'Онбординг кандидата', step: 'шаг', of: 'из',
+    welcomeT: 'Видео-приветствие от команды', welcomeS: '0:42 · познакомься с командой',
+    welcomeText: 'Привет! Рады, что откликнулся 👋 Пара коротких вопросов — и ты на следующем шаге.',
+    testT: 'Тестовое задание', attach: 'Прикрепить работу', terms: 'Условия сотрудничества и оплата', nda: 'NDA · подписание в один тап', submit: 'Отправить отклик',
+    left: 'до дедлайна', tz: 'по МСК',
+    lifecycle: ['Сгенерирован', 'Ссылка отправлена', 'Открыл онбординг', 'Сдал работу', 'Проверка', 'Принят'],
+  },
+  en: {
+    role: 'Candidate onboarding', step: 'step', of: 'of',
+    welcomeT: 'Video welcome from the team', welcomeS: '0:42 · meet the team',
+    welcomeText: 'Hey! Glad you applied 👋 A few quick questions and you’re on the next step.',
+    testT: 'Test task', attach: 'Attach your work', terms: 'Terms & payment', nda: 'NDA · sign in one tap', submit: 'Send application',
+    left: 'until deadline', tz: 'MSK',
+    lifecycle: ['Generated', 'Link sent', 'Opened onboarding', 'Submitted', 'In review', 'Accepted'],
+  },
+};
+const ONB_WHY = [
+  { icon: Clock, ru: ['Живой дедлайн', 'Секундомер с учётом часового пояса кандидата — не мёртвая дата, как в форме.'], en: ['Live deadline', 'A countdown in the candidate’s timezone — not a dead date on a form.'] },
+  { icon: Zap, ru: ['Трекер статуса', 'Видно в реальном времени, на каком шаге каждый кандидат.'], en: ['Status tracker', 'See in real time which step each candidate is on.'] },
+  { icon: BarChart3, ru: ['Авто-скоринг', 'ИИ оценивает работу по твоим критериям и подсвечивает сильных.'], en: ['Auto-scoring', 'AI scores work by your criteria and flags top talent.'] },
+  { icon: KanbanSquare, ru: ['Сразу в CRM', 'Отклик падает в воронку с тегами — без ручного переноса из формы.'], en: ['Straight to CRM', 'Responses land in your funnel tagged — no manual copy-paste.'] },
+];
 
 function OnboardingForge() {
   const [role, setRole] = useState(0);
   const [on, setOn] = useState<Record<string, boolean>>({ welcome: true, test: true, terms: true, nda: true, survey: true });
   const [lang, setLang] = useState<'RU' | 'EN'>('RU');
   const [gen, setGen] = useState(0);
+  const [cur, setCur] = useState(2);                       // живой статус кандидата
+  const [left, setLeft] = useState<number | null>(null);   // мс до дедлайна
   const r = ONB_ROLES[role];
+  const en = lang === 'EN';
+  const lk: 'ru' | 'en' = en ? 'en' : 'ru';
+  const tt = en ? ONB_T.en : ONB_T.ru;
   const regen = () => setGen((g) => g + 1);
+
+  // живой трекер статуса — шаг продвигается сам
+  useEffect(() => {
+    const id = setInterval(() => setCur((c) => (c >= 4 ? 1 : c + 1)), 2800);
+    return () => clearInterval(id);
+  }, []);
+  // живой дедлайн-секундомер (сброс при смене роли / перегенерации)
+  useEffect(() => {
+    const target = Date.now() + r.days * 86400000 - 3600000;
+    const tick = () => setLeft(Math.max(0, target - Date.now()));
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [r.days, gen]);
+  const fmtLeft = (ms: number) => {
+    const s = Math.floor(ms / 1000);
+    const p = (n: number) => String(n).padStart(2, '0');
+    return `${Math.floor(s / 86400)}${en ? 'd' : 'д'} ${p(Math.floor((s % 86400) / 3600))}:${p(Math.floor((s % 3600) / 60))}:${p(s % 60)}`;
+  };
 
   return (
     <section id="onboarding" className="border-t border-line bg-panel/30">
@@ -1325,7 +1381,7 @@ function OnboardingForge() {
           <div className="max-w-2xl">
             <div className="font-mono text-xs uppercase tracking-widest text-accent-ink">онбординг</div>
             <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">Онбординг, который собирается сам</h2>
-            <p className="mt-3 text-muted">Выбери роль и нужные блоки — ИИ за секунды соберёт тест, условия и NDA в голосе твоего бренда и выдаст каждому кандидату персональную ссылку. Поменял настройку — онбординг пересобирается на лету.</p>
+            <p className="mt-3 text-muted">Это не Google-форма. ИИ собирает тест, условия и NDA под роль в голосе твоего бренда, выдаёт каждому персональную ссылку, считает дедлайн по часовому поясу и показывает статус кандидата в реальном времени. Поменял настройку — пересобирается на лету, хоть на английском.</p>
           </div>
         </Reveal>
 
@@ -1338,7 +1394,7 @@ function OnboardingForge() {
             <div className="mt-2 flex flex-wrap gap-2">
               {ONB_ROLES.map((x, i) => (
                 <button key={x.key} onClick={() => { setRole(i); regen(); }} className={cn('rounded-full border px-3 py-1.5 text-xs transition-colors', i === role ? 'border-accent/50 bg-accent-soft text-accent-ink' : 'border-line text-muted hover:text-text')}>
-                  {x.label}
+                  {x.label.ru}
                 </button>
               ))}
             </div>
@@ -1380,7 +1436,7 @@ function OnboardingForge() {
 
           {/* ПРЕВЬЮ ОНБОРДИНГА — полноценный брендированный экран кандидата */}
           <Reveal delay={120}>
-            <div key={gen} className="lp-rise overflow-hidden rounded-2xl border border-line bg-bg shadow-xl">
+            <div key={`${gen}-${lang}`} className="lp-rise overflow-hidden rounded-2xl border border-line bg-bg shadow-xl">
               {/* ── Брендовая шапка TargetPoint — настоящий логотип (public/onb-logo.png),
                   «леттерхед» как в их реальной онбординг-форме ── */}
               <div className="border-b border-line bg-white px-5 pt-4 pb-3">
@@ -1393,18 +1449,19 @@ function OnboardingForge() {
                   <div className="h-px flex-1 bg-[#16161c]/80" />
                   <span className="shrink-0 text-[10px] font-medium uppercase tracking-wider text-[#16161c]">We’re hiring at TargetPoint</span>
                 </div>
-                <div className="mt-2 text-[11px] text-muted">Онбординг кандидата · {r.label}</div>
+                <div className="mt-2 text-[11px] text-muted">{tt.role} · {onbL(r.label, en)}</div>
               </div>
 
-              {/* ── Прогресс + персональная ссылка ── */}
+              {/* ── Живой статус + прогресс + персональная ссылка ── */}
               <div className="border-b border-line px-4 py-3">
                 <div className="flex items-center justify-between text-[11px]">
                   <span className="inline-flex items-center gap-1.5 font-mono text-muted"><Link2 size={12} className="text-accent-ink" /> threadhunt.app/c/8f3a-2k9d</span>
-                  <span className="text-muted">шаг 1 из 4</span>
+                  <span className="inline-flex items-center gap-1.5 text-accent-ink"><span className="h-1.5 w-1.5 rounded-full bg-success lp-ring" /> {tt.lifecycle[cur]}</span>
                 </div>
                 <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-panel-2">
-                  <div className="h-full w-1/4 rounded-full bg-accent" />
+                  <div className="h-full rounded-full bg-accent transition-all duration-700" style={{ width: `${((cur + 1) / tt.lifecycle.length) * 100}%` }} />
                 </div>
+                <div className="mt-1 text-right font-mono text-[10px] text-muted">{tt.step} {cur + 1} {tt.of} {tt.lifecycle.length}</div>
               </div>
 
               {/* ── Тело онбординга (скролл) ── */}
@@ -1413,31 +1470,31 @@ function OnboardingForge() {
                   <div className="flex items-center gap-3 rounded-xl border border-line bg-panel p-3">
                     <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-accent-soft text-accent-ink"><Play size={16} /></span>
                     <div className="min-w-0">
-                      <div className="text-sm font-medium">Видео-приветствие от команды</div>
-                      <div className="text-[11px] text-muted">0:42 · познакомься с тем, кто тебя ждёт</div>
+                      <div className="text-sm font-medium">{tt.welcomeT}</div>
+                      <div className="text-[11px] text-muted">{tt.welcomeS}</div>
                     </div>
                   </div>
                 )}
 
-                {on.welcome && <p className="px-0.5 pt-1 text-[13px] leading-relaxed text-text">Привет! Рады, что откликнулся 👋 Пара коротких вопросов — и ты на следующем шаге.</p>}
+                {on.welcome && <p className="px-0.5 pt-1 text-[13px] leading-relaxed text-text">{tt.welcomeText}</p>}
 
                 {on.survey && r.questions.map((qq, i) => (
-                  <div key={`${r.key}-${i}`} className="rounded-xl border border-line bg-panel p-3">
+                  <div key={`${r.key}-${i}-${lang}`} className="rounded-xl border border-line bg-panel p-3">
                     <div className="flex items-start gap-2 text-[13px] font-medium text-text">
                       <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-accent-soft text-[9px] text-accent-ink">{i + 1}</span>
-                      {qq.q}
+                      {onbL(qq.q, en)}
                     </div>
                     <div className="mt-2.5 pl-6">
                       {qq.type === 'choice' && (
                         <div className="flex flex-wrap gap-1.5">
-                          {qq.opts!.map((o, j) => (
+                          {qq.opts![lk].map((o, j) => (
                             <span key={o} className={cn('rounded-full border px-2.5 py-1 text-[11px]', j === 0 ? 'border-accent/50 bg-accent-soft text-accent-ink' : 'border-line text-muted')}>{o}</span>
                           ))}
                         </div>
                       )}
                       {qq.type === 'multi' && (
                         <div className="flex flex-wrap gap-1.5">
-                          {qq.opts!.map((o, j) => (
+                          {qq.opts![lk].map((o, j) => (
                             <span key={o} className={cn('inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[11px]', j < 2 ? 'border-accent/50 bg-accent-soft text-accent-ink' : 'border-line text-muted')}>
                               {j < 2 && <Check size={11} />} {o}
                             </span>
@@ -1461,48 +1518,71 @@ function OnboardingForge() {
 
                 {on.test && (
                   <div className="rounded-xl border border-line bg-panel p-3">
-                    <div className="flex items-center gap-1.5 text-[11px] font-medium text-muted"><ClipboardCheck size={13} className="text-accent-ink" /> Тестовое задание</div>
-                    <p className="mt-1.5 text-[13px] leading-relaxed text-text">{r.task}</p>
+                    <div className="flex items-center gap-1.5 text-[11px] font-medium text-muted"><ClipboardCheck size={13} className="text-accent-ink" /> {tt.testT}</div>
+                    <p className="mt-1.5 text-[13px] leading-relaxed text-text">{onbL(r.task, en)}</p>
                     <div className="mt-2 flex flex-wrap gap-1.5">
-                      {r.crit.map((c) => <span key={c} className="rounded-full bg-accent-soft px-2 py-0.5 text-[10px] text-accent-ink">{c}</span>)}
+                      {r.crit[lk].map((c) => <span key={c} className="rounded-full bg-accent-soft px-2 py-0.5 text-[10px] text-accent-ink">{c}</span>)}
                     </div>
                     <div className="mt-2.5 flex items-center gap-2">
-                      <span className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-dashed border-line py-2 text-[11px] text-muted"><Link2 size={12} className="text-accent-ink" /> Прикрепить работу</span>
-                      <span className="inline-flex items-center gap-1.5 text-[10px] text-muted"><Clock size={11} className="text-accent-ink" /> {r.deadline}</span>
+                      <span className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-dashed border-line py-2 text-[11px] text-muted"><Link2 size={12} className="text-accent-ink" /> {tt.attach}</span>
+                      <span className="inline-flex items-center gap-1.5 rounded-lg bg-accent-soft px-2.5 py-2 font-mono text-[11px] tabular-nums text-accent-ink"><Clock size={12} /> {left === null ? '—' : fmtLeft(left)}</span>
                     </div>
+                    <div className="mt-1 text-right text-[10px] text-muted">{tt.left} · {tt.tz}</div>
                   </div>
                 )}
 
                 {on.terms && (
                   <div className="flex items-center gap-2.5 rounded-xl border border-line bg-panel px-3 py-2.5 text-sm">
-                    <SlidersHorizontal size={15} className="text-accent-ink" /> Условия сотрудничества и оплата
+                    <SlidersHorizontal size={15} className="text-accent-ink" /> {tt.terms}
                   </div>
                 )}
                 {on.nda && (
                   <div className="flex items-center gap-2.5 rounded-xl border border-line bg-panel px-3 py-2.5 text-sm">
-                    <ShieldCheck size={15} className="text-accent-ink" /> NDA · подписание в один тап
+                    <ShieldCheck size={15} className="text-accent-ink" /> {tt.nda}
                   </div>
                 )}
 
                 <button className="mt-1 inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent lp-btn-grad px-5 py-2.5 text-sm font-semibold text-on-accent">
-                  Отправить отклик <ArrowRight size={15} />
+                  {tt.submit} <ArrowRight size={15} />
                 </button>
               </div>
             </div>
           </Reveal>
         </div>
 
-        {/* ЖИЗНЕННЫЙ ЦИКЛ */}
+        {/* ЧЕМ УМНЕЕ ОБЫЧНОЙ ФОРМЫ */}
+        <Reveal delay={140} className="mt-8">
+          <div className="mb-3 text-center font-mono text-[11px] uppercase tracking-widest text-muted">{en ? 'smarter than a google form' : 'умнее, чем google-форма'}</div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {ONB_WHY.map((w) => {
+              const Icon = w.icon;
+              const txt = en ? w.en : w.ru;
+              return (
+                <div key={txt[0]} className="lp-lift rounded-2xl border border-line bg-panel p-4">
+                  <span className="grid h-9 w-9 place-items-center rounded-lg bg-accent-soft text-accent-ink"><Icon size={16} /></span>
+                  <div className="mt-3 text-sm font-medium">{txt[0]}</div>
+                  <div className="mt-1 text-[12px] leading-relaxed text-muted">{txt[1]}</div>
+                </div>
+              );
+            })}
+          </div>
+        </Reveal>
+
+        {/* ЖИЗНЕННЫЙ ЦИКЛ — с живым текущим шагом */}
         <Reveal delay={160} className="mt-6 overflow-x-auto">
           <div className="flex min-w-max items-center gap-1">
-            {ONB_LIFECYCLE.map((s, i, arr) => (
-              <Fragment key={s}>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-panel px-2.5 py-1 text-[11px] text-muted">
-                  <span className="grid h-4 w-4 place-items-center rounded-full bg-accent-soft text-[9px] text-accent-ink">{i + 1}</span>{s}
-                </span>
-                {i < arr.length - 1 && <ChevronRight size={13} className="shrink-0 text-muted" />}
-              </Fragment>
-            ))}
+            {tt.lifecycle.map((s, i, arr) => {
+              const done = i < cur;
+              const here = i === cur;
+              return (
+                <Fragment key={s}>
+                  <span className={cn('inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] transition-colors', here ? 'border-accent/50 bg-accent-soft text-accent-ink' : done ? 'border-line text-text' : 'border-line text-muted')}>
+                    <span className={cn('grid h-4 w-4 place-items-center rounded-full text-[9px]', here ? 'bg-accent text-on-accent' : done ? 'bg-accent-soft text-accent-ink' : 'bg-panel-2 text-muted')}>{i + 1}</span>{s}
+                  </span>
+                  {i < arr.length - 1 && <ChevronRight size={13} className="shrink-0 text-muted" />}
+                </Fragment>
+              );
+            })}
           </div>
         </Reveal>
       </div>
