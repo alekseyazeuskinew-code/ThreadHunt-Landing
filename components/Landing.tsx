@@ -1256,6 +1256,258 @@ export function SiteFooter() {
 }
 
 /* ── Лендинг ───────────────────────────────────────────────────────────── */
+/* ── Онбординг-конструктор: показываем вживую, как ИИ собирает онбординг
+   с кастомизацией. Слева интерактивный конструктор, справа — превью глазами
+   кандидата, которое пересобирается на лету. ─────────────────────────────── */
+type OnbQ = { q: string; type: 'choice' | 'multi' | 'text' | 'scale'; opts?: string[] };
+const ONB_ROLES: { key: string; label: string; task: string; crit: string[]; deadline: string; questions: OnbQ[] }[] = [
+  {
+    key: 'video', label: 'Видеомонтажёр',
+    task: 'Смонтируй Reels 30 сек из присланного материала: динамичная нарезка, субтитры, трендовый звук.',
+    crit: ['ритм', 'субтитры', 'чистота склейки'], deadline: '2 дня',
+    questions: [
+      { q: 'Сколько лет профессионально монтируешь?', type: 'choice', opts: ['< 1 года', '1–3 года', '3–5 лет', '5+ лет'] },
+      { q: 'В каких программах работаешь?', type: 'multi', opts: ['Premiere Pro', 'After Effects', 'DaVinci', 'CapCut'] },
+      { q: 'Ссылка на шоурил / портфолио', type: 'text' },
+      { q: 'Сколько Reels в неделю потянешь?', type: 'choice', opts: ['до 5', '5–10', '10–20', '20+'] },
+      { q: 'Оцени свой уровень моушн-графики', type: 'scale' },
+      { q: 'Готов сдать тестовое за 2 дня?', type: 'choice', opts: ['Да', 'Нужно больше времени'] },
+    ],
+  },
+  {
+    key: 'target', label: 'Таргетолог',
+    task: 'Собери тестовую Meta-кампанию: 2 аудитории, 3 креатива, гипотеза и KPI на неделю.',
+    crit: ['логика аудиторий', 'оффер', 'прогноз CPL'], deadline: '1 день',
+    questions: [
+      { q: 'С какими нишами работал(а)?', type: 'multi', opts: ['E-com', 'Инфобиз', 'Услуги', 'Apps'] },
+      { q: 'Средний рекламный бюджет в месяц?', type: 'choice', opts: ['< $1k', '$1–5k', '$5–20k', '$20k+'] },
+      { q: 'Платформы, где ведёшь трафик', type: 'multi', opts: ['Meta', 'Google', 'TikTok', 'Telegram'] },
+      { q: 'Лучший достигнутый CPL и в какой нише', type: 'text' },
+      { q: 'Насколько уверенно читаешь аналитику?', type: 'scale' },
+      { q: 'Готов(а) к недельному тесту с KPI?', type: 'choice', opts: ['Да', 'Обсудим условия'] },
+    ],
+  },
+  {
+    key: 'design', label: 'Дизайнер',
+    task: 'Сделай 3 карточки для карусели Threads по брендбуку: обложка и 2 инфо-слайда.',
+    crit: ['композиция', 'типографика', 'гайдлайны'], deadline: '2 дня',
+    questions: [
+      { q: 'Основное направление?', type: 'choice', opts: ['Соцсети', 'Брендинг', 'UI/UX', 'Иллюстрация'] },
+      { q: 'Инструменты', type: 'multi', opts: ['Figma', 'Photoshop', 'Illustrator', 'Blender'] },
+      { q: 'Ссылка на Behance / портфолио', type: 'text' },
+      { q: 'Сколько креативов в неделю комфортно?', type: 'choice', opts: ['до 10', '10–20', '20–40', '40+'] },
+      { q: 'Насколько строго следуешь брендбуку?', type: 'scale' },
+      { q: 'Готов(а) к тестовому за 2 дня?', type: 'choice', opts: ['Да', 'Нужно больше времени'] },
+    ],
+  },
+];
+const ONB_BLOCKS: { key: string; label: string; icon: LucideIcon }[] = [
+  { key: 'welcome', label: 'Видео-приветствие', icon: Play },
+  { key: 'test', label: 'Тестовое задание', icon: ClipboardCheck },
+  { key: 'terms', label: 'Условия и оплата', icon: SlidersHorizontal },
+  { key: 'nda', label: 'NDA', icon: ShieldCheck },
+  { key: 'survey', label: 'Короткий опрос', icon: MessageSquare },
+];
+const ONB_LIFECYCLE = ['Сгенерирован', 'Ссылка отправлена', 'Кандидат открыл', 'Сдал работу', 'Проверка', 'Принят'];
+
+function OnboardingForge() {
+  const [role, setRole] = useState(0);
+  const [on, setOn] = useState<Record<string, boolean>>({ welcome: true, test: true, terms: true, nda: true, survey: true });
+  const [lang, setLang] = useState<'RU' | 'EN'>('RU');
+  const [gen, setGen] = useState(0);
+  const r = ONB_ROLES[role];
+  const regen = () => setGen((g) => g + 1);
+
+  return (
+    <section id="onboarding" className="border-t border-line bg-panel/30">
+      <div className="mx-auto max-w-6xl px-5 py-20 md:py-28">
+        <Reveal>
+          <div className="max-w-2xl">
+            <div className="font-mono text-xs uppercase tracking-widest text-accent-ink">онбординг</div>
+            <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">Онбординг, который собирается сам</h2>
+            <p className="mt-3 text-muted">Выбери роль и нужные блоки — ИИ за секунды соберёт тест, условия и NDA в голосе твоего бренда и выдаст каждому кандидату персональную ссылку. Поменял настройку — онбординг пересобирается на лету.</p>
+          </div>
+        </Reveal>
+
+        <div className="mt-10 grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1.05fr)]">
+          {/* КОНСТРУКТОР */}
+          <Reveal className="rounded-2xl border border-line bg-panel p-5">
+            <div className="flex items-center gap-2 text-sm font-medium"><SlidersHorizontal size={15} className="text-accent-ink" /> Конструктор</div>
+
+            <div className="mt-4 text-[11px] font-medium uppercase tracking-wide text-muted">Роль</div>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {ONB_ROLES.map((x, i) => (
+                <button key={x.key} onClick={() => { setRole(i); regen(); }} className={cn('rounded-full border px-3 py-1.5 text-xs transition-colors', i === role ? 'border-accent/50 bg-accent-soft text-accent-ink' : 'border-line text-muted hover:text-text')}>
+                  {x.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-4 text-[11px] font-medium uppercase tracking-wide text-muted">Блоки онбординга</div>
+            <div className="mt-2 space-y-1.5">
+              {ONB_BLOCKS.map((b) => {
+                const active = on[b.key];
+                const Icon = b.icon;
+                return (
+                  <button key={b.key} onClick={() => { setOn((s) => ({ ...s, [b.key]: !s[b.key] })); regen(); }} className={cn('flex w-full items-center gap-2.5 rounded-xl border px-3 py-2 text-sm transition-colors', active ? 'border-accent/40 bg-accent-soft' : 'border-line hover:bg-panel-2')}>
+                    <Icon size={15} className={active ? 'text-accent-ink' : 'text-muted'} />
+                    <span className={active ? 'text-text' : 'text-muted'}>{b.label}</span>
+                    <span className={cn('ml-auto grid h-5 w-9 place-items-center rounded-full text-[10px] font-medium transition-colors', active ? 'bg-accent text-on-accent' : 'bg-panel-2 text-muted')}>{active ? 'вкл' : 'выкл'}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="mt-4 flex items-center justify-between">
+              <div className="flex items-center gap-1.5 text-[11px] text-muted"><Globe size={12} className="text-accent-ink" /> язык онбординга</div>
+              <div className="flex gap-1 rounded-full border border-line p-0.5">
+                {(['RU', 'EN'] as const).map((l) => (
+                  <button key={l} onClick={() => { setLang(l); regen(); }} className={cn('rounded-full px-3 py-1 text-[11px] transition-colors', lang === l ? 'bg-accent-soft text-accent-ink' : 'text-muted')}>{l}</button>
+                ))}
+              </div>
+            </div>
+
+            <button onClick={regen} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent lp-btn-grad px-5 py-2.5 text-sm font-medium text-on-accent transition-colors hover:bg-accent-press">
+              <Sparkles size={15} /> Сгенерировать
+            </button>
+          </Reveal>
+
+          {/* связь генерации (десктоп) */}
+          <div className="hidden self-center text-accent-ink lg:flex lg:flex-col lg:items-center lg:gap-1">
+            <Wand2 size={18} />
+            <ArrowRight size={18} />
+          </div>
+
+          {/* ПРЕВЬЮ ОНБОРДИНГА — полноценный брендированный экран кандидата */}
+          <Reveal delay={120}>
+            <div key={gen} className="lp-rise overflow-hidden rounded-2xl border border-line bg-bg shadow-xl">
+              {/* ── Обложка с брендингом (плейсхолдер: при добавлении /onb-cover.jpg и /onb-logo.png заменю на реальные) ── */}
+              <div className="relative h-28 overflow-hidden bg-gradient-to-br from-[#6C5CFF] via-[#5b46d6] to-[#2d2a3a]">
+                <div className="pointer-events-none absolute inset-0 opacity-30 [background-image:radial-gradient(circle_at_80%_20%,#fff,transparent_45%)]" />
+                <div className="absolute inset-x-0 bottom-0 flex items-end gap-3 p-4">
+                  <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/95 font-display text-sm font-bold text-[#5b46d6] shadow">TH</div>
+                  <div className="min-w-0 pb-0.5 text-white">
+                    <div className="truncate text-sm font-semibold">ThreadHunt · команда найма</div>
+                    <div className="text-[11px] text-white/80">Онбординг кандидата · {r.label}</div>
+                  </div>
+                  <span className="ml-auto rounded-full bg-white/15 px-2 py-0.5 font-mono text-[10px] text-white backdrop-blur">{lang}</span>
+                </div>
+              </div>
+
+              {/* ── Прогресс + персональная ссылка ── */}
+              <div className="border-b border-line px-4 py-3">
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="inline-flex items-center gap-1.5 font-mono text-muted"><Link2 size={12} className="text-accent-ink" /> threadhunt.app/c/8f3a-2k9d</span>
+                  <span className="text-muted">шаг 1 из 4</span>
+                </div>
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-panel-2">
+                  <div className="h-full w-1/4 rounded-full bg-accent" />
+                </div>
+              </div>
+
+              {/* ── Тело онбординга (скролл) ── */}
+              <div className="max-h-[520px] space-y-3 overflow-y-auto p-4">
+                {on.welcome && (
+                  <div className="flex items-center gap-3 rounded-xl border border-line bg-panel p-3">
+                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-accent-soft text-accent-ink"><Play size={16} /></span>
+                    <div className="min-w-0">
+                      <div className="text-sm font-medium">Видео-приветствие от команды</div>
+                      <div className="text-[11px] text-muted">0:42 · познакомься с тем, кто тебя ждёт</div>
+                    </div>
+                  </div>
+                )}
+
+                {on.welcome && <p className="px-0.5 pt-1 text-[13px] leading-relaxed text-text">Привет! Рады, что откликнулся 👋 Пара коротких вопросов — и ты на следующем шаге.</p>}
+
+                {on.survey && r.questions.map((qq, i) => (
+                  <div key={`${r.key}-${i}`} className="rounded-xl border border-line bg-panel p-3">
+                    <div className="flex items-start gap-2 text-[13px] font-medium text-text">
+                      <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-accent-soft text-[9px] text-accent-ink">{i + 1}</span>
+                      {qq.q}
+                    </div>
+                    <div className="mt-2.5 pl-6">
+                      {qq.type === 'choice' && (
+                        <div className="flex flex-wrap gap-1.5">
+                          {qq.opts!.map((o, j) => (
+                            <span key={o} className={cn('rounded-full border px-2.5 py-1 text-[11px]', j === 0 ? 'border-accent/50 bg-accent-soft text-accent-ink' : 'border-line text-muted')}>{o}</span>
+                          ))}
+                        </div>
+                      )}
+                      {qq.type === 'multi' && (
+                        <div className="flex flex-wrap gap-1.5">
+                          {qq.opts!.map((o, j) => (
+                            <span key={o} className={cn('inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[11px]', j < 2 ? 'border-accent/50 bg-accent-soft text-accent-ink' : 'border-line text-muted')}>
+                              {j < 2 && <Check size={11} />} {o}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      {qq.type === 'text' && (
+                        <div className="rounded-lg border border-line bg-bg px-3 py-2 text-[11px] text-muted">https://…</div>
+                      )}
+                      {qq.type === 'scale' && (
+                        <div className="flex items-center gap-1.5">
+                          {[1, 2, 3, 4, 5].map((n) => (
+                            <span key={n} className={cn('h-2 flex-1 rounded-full', n <= 4 ? 'bg-accent' : 'bg-panel-2')} />
+                          ))}
+                          <span className="ml-1 text-[11px] text-accent-ink">4/5</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+
+                {on.test && (
+                  <div className="rounded-xl border border-line bg-panel p-3">
+                    <div className="flex items-center gap-1.5 text-[11px] font-medium text-muted"><ClipboardCheck size={13} className="text-accent-ink" /> Тестовое задание</div>
+                    <p className="mt-1.5 text-[13px] leading-relaxed text-text">{r.task}</p>
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {r.crit.map((c) => <span key={c} className="rounded-full bg-accent-soft px-2 py-0.5 text-[10px] text-accent-ink">{c}</span>)}
+                    </div>
+                    <div className="mt-2.5 flex items-center gap-2">
+                      <span className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-dashed border-line py-2 text-[11px] text-muted"><Link2 size={12} className="text-accent-ink" /> Прикрепить работу</span>
+                      <span className="inline-flex items-center gap-1.5 text-[10px] text-muted"><Clock size={11} className="text-accent-ink" /> {r.deadline}</span>
+                    </div>
+                  </div>
+                )}
+
+                {on.terms && (
+                  <div className="flex items-center gap-2.5 rounded-xl border border-line bg-panel px-3 py-2.5 text-sm">
+                    <SlidersHorizontal size={15} className="text-accent-ink" /> Условия сотрудничества и оплата
+                  </div>
+                )}
+                {on.nda && (
+                  <div className="flex items-center gap-2.5 rounded-xl border border-line bg-panel px-3 py-2.5 text-sm">
+                    <ShieldCheck size={15} className="text-accent-ink" /> NDA · подписание в один тап
+                  </div>
+                )}
+
+                <button className="mt-1 inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent lp-btn-grad px-5 py-2.5 text-sm font-semibold text-on-accent">
+                  Отправить отклик <ArrowRight size={15} />
+                </button>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+
+        {/* ЖИЗНЕННЫЙ ЦИКЛ */}
+        <Reveal delay={160} className="mt-6 overflow-x-auto">
+          <div className="flex min-w-max items-center gap-1">
+            {ONB_LIFECYCLE.map((s, i, arr) => (
+              <Fragment key={s}>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-panel px-2.5 py-1 text-[11px] text-muted">
+                  <span className="grid h-4 w-4 place-items-center rounded-full bg-accent-soft text-[9px] text-accent-ink">{i + 1}</span>{s}
+                </span>
+                {i < arr.length - 1 && <ChevronRight size={13} className="shrink-0 text-muted" />}
+              </Fragment>
+            ))}
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
 /* ── Шапка сайта: компактная навигация (4 пункта) + выровненный правый кластер,
    на мобайле — меню-бургер. CTA на телефоне дублируется прилипающей StickyCta. */
 function SiteHeader({ active }: { active: string }) {
@@ -1460,6 +1712,9 @@ export function Landing() {
 
       {/* ── ДВА РЕЖИМА ЗАПУСКА ── */}
       <LaunchModes />
+
+      {/* ── ОНБОРДИНГ-КОНСТРУКТОР ── */}
+      <OnboardingForge />
 
       {/* ── ВОЗМОЖНОСТИ ── */}
       <Bento />
