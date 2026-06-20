@@ -23,7 +23,7 @@ export const LEGAL: LegalInfo = {
   rea: 'REA VR-461511',
   regDate: '17.07.2023',
   address: 'Via Antonio Badile 57, 37131 Verona (VR), Italia',
-  email: 'alekseyazeuski@postecert.it',
+  email: '',
   phone: '',
 };
 
